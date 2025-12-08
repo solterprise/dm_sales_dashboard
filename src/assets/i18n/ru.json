@@ -1,0 +1,11 @@
+{
+    "auth": {
+        "title": "Добро пожаловать в Data Management",
+        "subtitle": "Для входа заполните поля ниже",
+        "login": "Логин",
+        "loginPlaceholder": "Введите логин",
+        "password": "Пароль",
+        "passwordPlaceholder": "Введите пароль",
+        "singIn": "Войти"
+    }
+}

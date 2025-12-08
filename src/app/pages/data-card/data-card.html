@@ -1,0 +1,19 @@
+<p-toolbar styleClass="mb-6">
+    <ng-template #start>
+        <p-button label="Назад"
+                  icon="pi pi-arrow-left"
+                  severity="secondary"
+                  class="mr-2"  />
+    </ng-template>
+
+    <ng-template #end>
+        <p-button label="Export" icon="pi pi-upload" severity="secondary"/>
+    </ng-template>
+</p-toolbar>
+
+<div class="col-span-12 xl:col-span-6">
+    <div class="card flex flex-col items-start">
+        <div class="font-semibold text-xl mb-4">Doughnut</div>
+        <p-chart type="doughnut" [data]="pieData" [options]="pieOptions"/>
+    </div>
+</div>

@@ -1,0 +1,11 @@
+{
+    "auth": {
+        "title": "Bine ați venit la Data Management",
+        "subtitle": "Pentru a vă conecta, completați câmpurile de mai jos",
+        "login": "Login",
+        "loginPlaceholder": "Introduceți login-ul",
+        "password": "Parolă",
+        "passwordPlaceholder": "Introduceți parola",
+        "singIn": "Conectare"
+    }
+}
