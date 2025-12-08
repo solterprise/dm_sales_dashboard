@@ -1,20 +1,21 @@
 <p-toolbar styleClass="mb-6">
     <ng-template #start>
-        <p-button label="Назад"
+        <p-button [label]="'utils.back'| transloco"
                   icon="pi pi-arrow-left"
                   severity="secondary"
-                  class="mr-2"  />
+                  class="mr-2"
+                  (click)="goBack()" />
     </ng-template>
 
     <ng-template #end>
-        <p-button label="Export" icon="pi pi-upload" severity="secondary"/>
+        <p-button label="Export" icon="pi pi-upload" severity="secondary" />
     </ng-template>
 </p-toolbar>
 
 <div class="col-span-12 xl:col-span-6">
     <div class="card flex flex-col items-start">
         <div class="font-semibold text-xl mb-4">Doughnut</div>
-        <p-chart type="doughnut" [data]="pieData" [options]="pieOptions"/>
+        <p-chart type="doughnut" [data]="pieData" [options]="pieOptions" />
     </div>
 </div>
 <div class="card">

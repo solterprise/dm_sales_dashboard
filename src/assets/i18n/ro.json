@@ -7,5 +7,9 @@
         "password": "Parolă",
         "passwordPlaceholder": "Introduceți parola",
         "singIn": "Conectare"
+    },
+    "utils": {
+        "back": "Înapoi",
+        "profile": "Profil"
     }
 }

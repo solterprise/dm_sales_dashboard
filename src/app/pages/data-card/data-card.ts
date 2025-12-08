@@ -7,10 +7,12 @@ import { Toolbar } from 'primeng/toolbar';
 import { Tree } from 'primeng/tree';
 import { TreeNode } from 'primeng/api';
 import { NodeService } from '@/pages/service/node.service';
+import { Router } from '@angular/router';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 @Component({
     selector: 'app-data-card',
-    imports: [UIChart, Button, Toolbar, Tree],
+    imports: [UIChart, Button, Toolbar, Tree, TranslocoPipe],
     templateUrl: './data-card.html',
     styleUrl: './data-card.scss',
     providers: [NodeService]
@@ -22,6 +24,7 @@ export class DataCard {
     treeValue: TreeNode[] = [];
     selectedTreeValue: TreeNode[] = [];
     nodeService = inject(NodeService);
+    private router = inject(Router);
 
     constructor(private layoutService: LayoutService) {
         this.nodeService.getFiles().then((files) => (this.treeValue = files));
@@ -66,5 +69,9 @@ export class DataCard {
         if (this.subscription) {
             this.subscription.unsubscribe();
         }
+    }
+
+    protected goBack() {
+        this.router.navigate(['/']);
     }
 }
