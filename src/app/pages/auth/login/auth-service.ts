@@ -1,23 +1,24 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
     providedIn: 'root'
 })
 export class AuthService {
     private http = inject(HttpClient);
-    private baseUrl = 'https://example.com/api';
+    private apiUrl = environment.apiUrl;
     private _user = signal<User | null>(null);
     isLoggedIn = computed(() => this._user() !== null);
 
     login(req: User): Observable<LoginResponse> {
-        return this.http.post<LoginResponse>(`${this.baseUrl}/login`, req).pipe(tap(() => this._user.set(req)));
+        return this.http.post<LoginResponse>(`${this.apiUrl}/login`, req).pipe(tap(() => this._user.set(req)));
     }
 
     logout(): Observable<LogoutResponse> {
         this._user.set(null);
-        return this.http.post<LogoutResponse>(`${this.baseUrl}/logout`, {});
+        return this.http.post<LogoutResponse>(`${this.apiUrl}/logout`, {});
     }
 
     get user() {
