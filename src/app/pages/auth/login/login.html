@@ -16,7 +16,7 @@
                         <label for="email1"
                                class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">{{ 'auth.login'|transloco }}</label>
                         <input pInputText id="email1" type="text" [placeholder]="'auth.loginPlaceholder'|transloco"
-                               class="w-full md:w-120 mb-8" formControlName="login" />
+                               class="w-full md:w-120 mb-8" formControlName="user" />
 
 
                         <label for="password1"
@@ -25,7 +25,7 @@
                                     [placeholder]="'auth.passwordPlaceholder'|transloco" [toggleMask]="true"
                                     styleClass="mb-4" [fluid]="true" [feedback]="false" />
 
-                        <p-button [label]="'auth.singIn'|transloco" styleClass="w-full" routerLink="/"
+                        <p-button [label]="'auth.singIn'|transloco" styleClass="w-full" type="submit"
                                   [disabled]="loginForm.invalid" />
                     </div>
                 </div>

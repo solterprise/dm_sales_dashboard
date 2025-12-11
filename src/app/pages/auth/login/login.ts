@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
 import { InputTextModule } from 'primeng/inputtext';
@@ -16,15 +16,23 @@ import { AuthService, User } from '@/pages/auth/login/auth-service';
     templateUrl: './login.html'
 })
 export class Login {
-    authService = inject(AuthService);
+   private readonly authService = inject(AuthService);
+   private  readonly  router = inject(Router);
 
     loginForm = new FormGroup({
-        login: new FormControl('', Validators.required),
+        user: new FormControl('', Validators.required),
         password: new FormControl('', Validators.required),
     });
 
     onSubmit() {
-        if (!this.loginForm.valid)return;
-        this.authService.login(this.loginForm.value as User).subscribe()
+        console.log(this.loginForm.value as User);
+        this.authService.login(this.loginForm.value as User).subscribe({
+            next: value =>{
+             this.router.navigate(['/']);
+            },
+            error: error =>{
+                console.log(error);
+            }
+        })
     }
 }
