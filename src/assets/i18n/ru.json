@@ -6,11 +6,14 @@
         "loginPlaceholder": "Введите логин",
         "password": "Пароль",
         "passwordPlaceholder": "Введите пароль",
-        "singIn": "Войти"
+        "singIn": "Войти",
+        "loginRequired": "Логин обязателен",
+        "passwordRequired": "Пароль обязателен"
     },
     "sales": {
         "title": "Продажи",
-        "warehouse": "Склад"
+        "warehouse": "Склад",
+        "nomenclature": "Номенклатура"
     },
     "utils": {
         "back": "Назад",

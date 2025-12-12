@@ -6,11 +6,14 @@
         "loginPlaceholder": "Introduceți login-ul",
         "password": "Parolă",
         "passwordPlaceholder": "Introduceți parola",
-        "singIn": "Conectare"
+        "singIn": "Conectare",
+        "loginRequired": "Login-ul este obligatoriu",
+        "passwordRequired": "Parola este obligatorie"
     },
     "sales": {
         "title": "Vânzări",
-        "warehouse": "Depozit"
+        "warehouse": "Depozit",
+        "nomenclature": "Nomenclatură"
     },
     "utils": {
         "back": "Înapoi",

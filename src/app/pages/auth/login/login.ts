@@ -6,33 +6,57 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { RippleModule } from 'primeng/ripple';
-import { TranslocoModule, TranslocoPipe } from '@jsverse/transloco';
+import { TranslocoModule } from '@jsverse/transloco';
 import { AuthService, User } from '@/pages/auth/login/auth-service';
+import { finalize } from 'rxjs';
+import { MessageService } from 'primeng/api';
 
 @Component({
     selector: 'app-login',
     standalone: true,
-    imports: [ButtonModule, CheckboxModule, InputTextModule, PasswordModule, FormsModule, RouterModule, RippleModule, TranslocoModule, ReactiveFormsModule],
-    templateUrl: './login.html'
+    imports: [
+        ButtonModule,
+        CheckboxModule,
+        InputTextModule,
+        PasswordModule,
+        FormsModule,
+        RouterModule,
+        RippleModule,
+        TranslocoModule,
+        ReactiveFormsModule
+    ],
+    templateUrl: './login.html',
+    providers: [MessageService]
 })
 export class Login {
-   private readonly authService = inject(AuthService);
-   private  readonly  router = inject(Router);
+    private readonly authService = inject(AuthService);
+    private readonly router = inject(Router);
+    protected isLoading = false;
+    private messageService = inject(MessageService)
 
     loginForm = new FormGroup({
         user: new FormControl('', Validators.required),
-        password: new FormControl('', Validators.required),
+        password: new FormControl('', Validators.required)
     });
 
     onSubmit() {
-        console.log(this.loginForm.value as User);
-        this.authService.login(this.loginForm.value as User).subscribe({
-            next: value =>{
-             this.router.navigate(['/']);
-            },
-            error: error =>{
-                console.log(error);
-            }
-        })
+        if (this.loginForm.invalid) {
+            this.loginForm.markAllAsTouched();
+            return;
+        }
+        this.isLoading = true;
+        this.authService
+            .login(this.loginForm.value as User)
+            .pipe(finalize(() => (this.isLoading = false)))
+            .subscribe({
+                next: () => {
+                    this.isLoading = false;
+                    this.router.navigate(['/']);
+                },
+                error: (error) => {
+                    this.messageService.add({ severity: 'contrast', summary: 'Error', detail: 'Message Content' });
+                    console.log(error);
+                }
+            });
     }
 }
