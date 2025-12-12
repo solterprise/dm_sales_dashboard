@@ -1,6 +1,6 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -13,13 +13,17 @@ export class AuthService {
     isLoggedIn = computed(() => this._user() !== null);
 
     login(req: User): Observable<LoginResponse> {
-        console.log(req);
         const headers = new HttpHeaders({
-            Authorization: 'Basic ' + btoa(`${req.user}:${req.password}`)
+            'user': req.user,
+            'password': req.password
         });
-        console.log(headers);
 
-        return this.http.get<LoginResponse>(`${this.apiUrl}auth/login`, { headers });
+        return this.http.get<LoginResponse>(`${this.apiUrl}auth/login`, { headers }).pipe(
+            tap((resp) => {
+                this._user.set(resp.token ? req : null);
+                localStorage.setItem('token', resp.token);
+            })
+        );
     }
 
 

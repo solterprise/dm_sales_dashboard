@@ -8,8 +8,20 @@
         "passwordPlaceholder": "Введите пароль",
         "singIn": "Войти"
     },
+    "sales": {
+        "title": "Продажи",
+        "warehouse": "Склад"
+    },
     "utils": {
         "back": "Назад",
-        "profile": "Профиль"
+        "profile": "Профиль",
+        "select": "Выбрать",
+        "Search": "Поиск",
+        "dateStart": "С",
+        "dateEnd": "По",
+        "dateStartPlaceholder": "Выберите дату начала",
+        "dateEndPlaceholder": "Выберите дату окончания",
+        "clear": "Сбросить",
+        "noData": "Данные отсутствуют"
     }
 }

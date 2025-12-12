@@ -1,4 +1,4 @@
-import { provideHttpClient, withFetch } from '@angular/common/http';
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { ApplicationConfig, isDevMode } from '@angular/core';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideRouter, withEnabledBlockingInitialNavigation, withInMemoryScrolling } from '@angular/router';
@@ -8,6 +8,7 @@ import { appRoutes } from './app.routes';
 import { provideTransloco } from '@jsverse/transloco';
 import { TranslocoHttpLoader } from '@/@core/translate-loader';
 import { provideServiceWorker } from '@angular/service-worker';
+import {authorizeInterceptor } from '@/pages/auth/login/auth-interceptor';
 
 export const appConfig: ApplicationConfig = {
     providers: [
@@ -19,7 +20,7 @@ export const appConfig: ApplicationConfig = {
             }),
             withEnabledBlockingInitialNavigation()
         ),
-        provideHttpClient(withFetch()),
+        provideHttpClient(withInterceptors([authorizeInterceptor])),
         provideTransloco({
             config: {
                 availableLangs: ['ru', 'ro'],

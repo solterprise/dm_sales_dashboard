@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { AppMenuitem } from './app.menuitem';
+import { TranslocoService } from '@jsverse/transloco';
 
 @Component({
     selector: 'app-menu',
@@ -22,15 +23,19 @@ import { AppMenuitem } from './app.menuitem';
 })
 export class AppMenu {
     model: MenuItem[] = [];
+    private transloco = inject(TranslocoService);
 
     ngOnInit() {
         this.model = [
             {
-                label: 'Home',
-                items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/'] }]
+                label: 'Menu',
+                items: [{
+                    label: this.transloco.translate('sales.title'),
+                    icon: 'pi pi-shopping-cart',
+                    routerLink: ['/'] }]
             },
             {
-                label: 'UI Components',
+                label: '',
                 items: [{ label: 'Card', icon: 'pi pi-fw pi-id-card', routerLink: ['/uikit/card'] }]
             }
         ];

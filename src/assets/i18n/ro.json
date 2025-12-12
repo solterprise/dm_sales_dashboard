@@ -8,8 +8,20 @@
         "passwordPlaceholder": "Introduceți parola",
         "singIn": "Conectare"
     },
+    "sales": {
+        "title": "Vânzări",
+        "warehouse": "Depozit"
+    },
     "utils": {
         "back": "Înapoi",
-        "profile": "Profil"
+        "profile": "Profil",
+        "select": "Selectează unul",
+        "dateStart": "De la",
+        "dateEnd": "Până la",
+        "dateStartPlaceholder": "Selectează data de început",
+        "dateEndPlaceholder": "Selectează data de sfârșit",
+        "Search": "Căutare",
+        "clear": "Resetează",
+        "noData": "Nu există date disponibile"
     }
 }
