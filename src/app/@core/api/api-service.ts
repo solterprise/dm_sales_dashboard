@@ -10,17 +10,30 @@ export class ApiService {
     private http = inject(HttpClient);
     private apiUrl = environment.apiUrl;
 
-    public getList(payload: Sale): Observable<any[]> {
+    public getList(payload: any): Observable<SaleResponse[]> {
         const params = new HttpParams()
             .set('dateStart', payload.dateStart)
             .set('dateEnd', payload.dateEnd)
             .set('warehouse', payload.warehouse!);
-        return this.http.get<any>(`${this.apiUrl}sales/getSales`, { params });
+        return this.http.get<SaleResponse[]>(`${this.apiUrl}sales/getSales`, { params });
     }
 }
 
 export interface Sale {
-    dateStart: string;
-    dateEnd: string;
-    warehouse: string| null;
+    dateStart: Date | null;
+    dateEnd: Date | null;
+    warehouse: string | null;
+}
+
+export interface SaleResponse {
+    amount: number;
+    category: string;
+    deliveryAmount: number;
+    deliveryQuantity: number;
+    item: string;
+    itemId: number;
+    price: number;
+    quantity: number;
+    warehouse: string;
+    warehouseId: number;
 }

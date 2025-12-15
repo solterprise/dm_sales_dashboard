@@ -3,3 +3,8 @@
 @use './layout/layout.scss';
 @use 'primeicons/primeicons.css';
 @use './demo/demo.scss';
+
+:root {
+    --p-button-primary-background:  rgb(42, 120, 118)!important;
+    --p-button-primary-border-color:  rgb(42, 120, 118)!important;
+}

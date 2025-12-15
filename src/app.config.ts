@@ -1,4 +1,4 @@
-import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { ApplicationConfig, isDevMode } from '@angular/core';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideRouter, withEnabledBlockingInitialNavigation, withInMemoryScrolling } from '@angular/router';
@@ -9,6 +9,7 @@ import { provideTransloco } from '@jsverse/transloco';
 import { TranslocoHttpLoader } from '@/@core/translate-loader';
 import { provideServiceWorker } from '@angular/service-worker';
 import {authorizeInterceptor } from '@/pages/auth/login/auth-interceptor';
+import { PRIMENG_RO } from './assets/primen-ng-ro';
 
 export const appConfig: ApplicationConfig = {
     providers: [
@@ -31,9 +32,12 @@ export const appConfig: ApplicationConfig = {
             loader: TranslocoHttpLoader
         }),
         provideAnimationsAsync(),
-        providePrimeNG({ theme: { preset: Aura, options: { darkModeSelector: '.app-dark' } } }), provideServiceWorker('ngsw-worker.js', {
+        providePrimeNG(
+            { translation: PRIMENG_RO, theme: { preset: Aura, options: { darkModeSelector: '.app-dark' } } }), provideServiceWorker('ngsw-worker.js', {
             enabled: !isDevMode(),
             registrationStrategy: 'registerWhenStable:30000'
-          })
+          },
+
+          )
     ]
 };

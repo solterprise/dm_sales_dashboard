@@ -1,91 +1,134 @@
 <p-toolbar styleClass="mb-6">
     <ng-template #start>
-        <div class="font-semibold text-xl mb-4">{{'sales.title'|transloco}}</div>
+        <div class="font-semibold text-xl mb-4">{{ 'sales.title'|transloco }}</div>
     </ng-template>
 
-<!--    <ng-template #end>
-        <p-button label="Export" icon="pi pi-upload" severity="secondary" />
-    </ng-template>-->
+    <ng-template #end>
+        <div class="flex items-center justify-end gap-8 mt-4 text-lg font-semibold">
+            <div class="flex flex-col text-right">
+                <span class="text-gray-600">{{ 'sales.totalAmount'| transloco }}</span>
+                <span>{{ totalAmount() | number:'1.2-2' }}</span>
+            </div>
+
+            <div class="flex flex-col text-right">
+                <span class="text-gray-600">{{ 'sales.deliveryAmount'|transloco }}</span>
+                <span>{{ totalDeliveryAmount() | number:'1.2-2' }}</span>
+            </div>
+        </div>
+    </ng-template>
 </p-toolbar>
 <div class="card mb-8! w-full">
     <p-table #dt1
-             [value]="products"
+             [value]="sales"
              [paginator]="true"
              [rows]="10"
-             [loading]="loading"
-             [globalFilterFields]="['item', 'price']"
+             [globalFilterFields]="['item', 'price', 'amount']"
              responsiveLayout="scroll">
         <ng-template #caption>
-            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <button
                     pButton
                     [label]="'utils.clear'|transloco"
-                    class="p-button-outlined"
+                    class="bg-teal-700 text-white border-none mt-4"
                     icon="pi pi-filter-slash"
                     (click)="clear(dt1)">
                 </button>
-                <div class="flex flex-col space-y-1">
-                <label for="state">{{'sales.warehouse'| transloco}}</label>
-                <p-select id="state" [options]="warehouses" [placeholder]="'utils.select'|transloco"/>
-                </div>
-                <div class="flex flex-col space-y-1">
-                <label for="state">{{'utils.dateStart'| transloco}}</label>
-                <p-datepicker [showIcon]="true"
-                              [showButtonBar]="true"
-                              [(ngModel)]="payload.dateStart"
-                              [placeholder]="('utils.dateStartPlaceholder' | transloco)"/>
-                </div>
-                <div class="flex flex-col space-y-1">
-                <label for="state">{{'utils.dateEnd'|transloco}}</label>
-                <p-datepicker [showIcon]="true"
-                              [showButtonBar]="true"
-                              [(ngModel)]="payload.dateEnd"
-                              [placeholder]="('utils.dateEndPlaceholder' | transloco)"/>
+
+                <div class="flex flex-col sm:flex-row sm:items-end sm:gap-4 gap-3 flex-1">
+
+                    <div class="flex flex-col w-full sm:w-48">
+                        <label>{{ 'sales.warehouse' | transloco }}</label>
+                        <p-select
+                            [options]="warehouses"
+                            [placeholder]="'utils.select'|transloco"
+                            [(ngModel)]="payload.warehouse"
+                            (onChange)="applyFilter()">
+                        </p-select>
+                    </div>
+
+                    <div class="flex flex-col w-full sm:w-48">
+                        <label>{{ 'utils.dateStart' | transloco }}</label>
+                        <p-datepicker
+                            [showIcon]="true"
+                            [showButtonBar]="true"
+                            [(ngModel)]="payload.dateStart"
+                            (onSelect)="applyFilter()"
+                            [placeholder]="'utils.dateStartPlaceholder' | transloco">
+                        </p-datepicker>
+                    </div>
+
+                    <!-- Дата конца -->
+                    <div class="flex flex-col w-full sm:w-48">
+                        <label>{{ 'utils.dateEnd' | transloco }}</label>
+                        <p-datepicker
+                            [showIcon]="true"
+                            [showButtonBar]="true"
+                            [(ngModel)]="payload.dateEnd"
+                            (onSelect)="applyFilter()"
+                            [placeholder]="'utils.dateEndPlaceholder' | transloco">
+                        </p-datepicker>
+                    </div>
+
+                    <div class="flex flex-col w-full sm:w-48">
+                        <label>{{ 'utils.selectSnippet' | transloco }}</label>
+                        <p-select
+                            [options]="snippets"
+                            optionLabel="labelKey"
+                            optionValue="value"
+                            placeholder="Выберите период"
+                            (onChange)="selectSnippet($event.value)">
+                            <ng-template let-option pTemplate="item">
+                                {{ option.labelKey | transloco }}
+                            </ng-template>
+                            <ng-template let-option pTemplate="selectedItem">
+                                {{ option.labelKey | transloco }}
+                            </ng-template>
+                        </p-select>
+                    </div>
+
                 </div>
 
-                <p-iconfield iconPosition="left" class="w-full sm:w-auto">
-                    <p-inputicon>
-                        <i class="pi pi-search"></i>
-                    </p-inputicon>
-                    <input
-                        pInputText
-                        type="text"
-                        class="w-full sm:w-64"
-                        [placeholder]="'utils.Search'|transloco"
-                        (input)="onGlobalFilter(dt1, $event)"
-                    />
-                </p-iconfield>
+                <!-- Поиск -->
+                <div class="flex w-full sm:w-auto  sm:mt-0">
+                    <p-iconfield iconPosition="left" class="w-full sm:w-auto">
+                        <p-inputicon>
+                            <i class="pi pi-search"></i>
+                        </p-inputicon>
+                        <input
+                            pInputText
+                            type="text"
+                            class="w-full sm:w-64"
+                            [placeholder]="'utils.Search' | transloco"
+                            (input)="onGlobalFilter(dt1, $event)" />
+                    </p-iconfield>
+                </div>
+
             </div>
         </ng-template>
         <ng-template #header>
             <tr>
-                <th pSortableColumn="item">{{'sales.nomenclature'|transloco}}
+                <th pSortableColumn="item">{{ 'sales.nomenclature'|transloco }}
                     <p-sortIcon field="item"></p-sortIcon>
                 </th>
-                <th pSortableColumn="price">PRICE
+                <th pSortableColumn="quantity">{{ 'sales.quantity'| transloco }}
+                    <p-sortIcon field="quantity"></p-sortIcon>
+                </th>
+                <th pSortableColumn="amount">{{ 'sales.amount'| transloco }}
                     <p-sortIcon field="price"></p-sortIcon>
                 </th>
-                <th pSortableColumn="warehouse">warehouse
-                    <p-sortIcon field="price"></p-sortIcon>
-                </th>
-                <th>View</th>
             </tr>
         </ng-template>
         <ng-template #body let-product>
             <tr>
-                <td style="width: 35%; min-width: 7rem;">{{ product.item + '  ' }} {{ product.price + ' MDL' }}</td>
-                <td style="width: 35%; min-width: 8rem;">{{ product.price + ' MDL' }}</td>
-                <td style="width: 35%; min-width: 8rem;">{{ product.warehouse }}</td>
-                <td style="width: 15%;">
-                    <button pButton pRipple type="button" icon="pi pi-search"
-                            class="p-button p-component p-button-text p-button-icon-only"></button>
-                </td>
+                <td style="width: 35%; min-width: 7rem;">{{ product.item + '  ' }} {{ product.price }}</td>
+                <td style="width: 35%; min-width: 8rem;">{{ product.quantity }}</td>
+                <td style="width: 35%; min-width: 8rem;">{{ product.amount }}</td>
             </tr>
         </ng-template>
         <ng-template pTemplate="emptymessage">
             <tr>
                 <td colspan="4" class="text-center text-gray-500 py-4">
-                    {{'utils.noData'|transloco}}
+                    {{ 'utils.noData'|transloco }}
                 </td>
             </tr>
         </ng-template>

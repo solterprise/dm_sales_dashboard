@@ -18,7 +18,7 @@ import { Menu } from 'primeng/menu';
     template: ` <div class="layout-topbar">
         <div class="layout-topbar-logo-container">
             <button class="layout-menu-button layout-topbar-action" (click)="layoutService.onMenuToggle()">
-                <i class="pi pi-bars"></i>
+                <i class="pi pi-bars"  style="color:rgb(42, 120, 118);"></i>
             </button>
             <a class="layout-topbar-logo" routerLink="/">
                 <span>Data Management</span>
@@ -28,7 +28,7 @@ import { Menu } from 'primeng/menu';
         <div class="layout-topbar-actions">
             <div class="layout-config-menu">
                 <button type="button" class="layout-topbar-action" (click)="toggleDarkMode()">
-                    <i [ngClass]="{ 'pi ': true, 'pi-moon': layoutService.isDarkTheme(), 'pi-sun': !layoutService.isDarkTheme() }"></i>
+                    <i [ngClass]="{ 'pi ': true, 'pi-moon': layoutService.isDarkTheme(), 'pi-sun': !layoutService.isDarkTheme() }"  style="color:rgb(42, 120, 118);"></i>
                 </button>
             </div>
 
@@ -38,8 +38,13 @@ import { Menu } from 'primeng/menu';
 
             <div class="layout-topbar-menu hidden lg:block">
                 <div class="layout-topbar-menu-content">
-                    <p-splitbutton [label]="currentLang()|uppercase" [model]="languages" icon="pi pi-globe" />
-                    <p-splitbutton [label]="'utils.profile' | transloco" [model]="items" icon="pi pi-user" />
+                    <p-splitbutton [label]="currentLang()|uppercase"
+                                   [model]="languages"
+                                   icon="pi pi-globe"
+                    />
+                    <p-splitbutton [label]="'utils.profile' | transloco"
+                                   [model]="items"
+                                   icon="pi pi-user" />
                 </div>
             </div>
         </div>

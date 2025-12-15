@@ -12,8 +12,12 @@
     },
     "sales": {
         "title": "Продажи",
-        "warehouse": "Склад",
-        "nomenclature": "Номенклатура"
+        "warehouse": "Точка продаж",
+        "nomenclature": "Номенклатура",
+        "amount": "Сумма",
+        "quantity": "Количество",
+        "totalAmount": "Общая сумма",
+        "deliveryAmount" : "Сумма доставки"
     },
     "utils": {
         "back": "Назад",
@@ -25,6 +29,10 @@
         "dateStartPlaceholder": "Выберите дату начала",
         "dateEndPlaceholder": "Выберите дату окончания",
         "clear": "Сбросить",
-        "noData": "Данные отсутствуют"
+        "noData": "Данные отсутствуют",
+        "selectSnippet": "Выбрать период",
+        "today": "Текущий день",
+        "currentMonth": "Текущий месяц",
+        "currentYear": "Текущий год"
     }
 }
