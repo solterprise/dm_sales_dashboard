@@ -36,7 +36,9 @@
         "currentYear": "Anul curent",
         "menu": "Meniu",
         "selectWarehouse": "Selectează punctul de vanzare",
-        "selectSnippetPlaceholder": "Selectează perioada"
+        "selectSnippetPlaceholder": "Selectează perioada",
+        "noResultsFound": "Nu s-au găsit rezultate"
+
     },
     "warehouse": {
         "title": "Depozit"

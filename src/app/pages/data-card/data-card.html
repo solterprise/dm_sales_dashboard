@@ -90,14 +90,10 @@
                 placeholder="{{ 'utils.selectWarehouse' | transloco }}"
                 [(ngModel)]="selectedWarehouses"
                 (onChange)="onWarehouseChange()"
-                display="chip">
+                display="chip"
+                [emptyMessage]=" 'utils.noResultsFound' | transloco "
+                [emptyFilterMessage]=" 'utils.noResultsFound' | transloco ">
             </p-multiSelect>
-<!--            <p-select
-                [options]="warehouses"
-                [placeholder]="'utils.select' | transloco"
-                [(ngModel)]="payload.warehouse"
-                (onChange)="applyFilter()">
-            </p-select>-->
         </div>
     </div>
 </div>

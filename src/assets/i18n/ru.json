@@ -36,7 +36,8 @@
         "currentYear": "Текущий год",
         "menu": "Меню",
         "selectWarehouse": "Выберите точки продаж",
-        "selectSnippetPlaceholder": "Выберите период"
+        "selectSnippetPlaceholder": "Выберите период",
+        "noResultsFound": "Ничего не найдено"
     },
     "warehouse": {
         "title": "Склад"

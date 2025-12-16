@@ -133,6 +133,7 @@ export class DataCard implements OnInit {
     applyFilter() {
         this.getData(this.payload);
     }
+
     onWarehouseChange() {
         this.payload.warehouse = this.selectedWarehouses.length
             ? this.selectedWarehouses.join(',')
