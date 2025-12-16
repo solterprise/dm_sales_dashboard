@@ -9,11 +9,11 @@ import { DecimalPipe } from '@angular/common';
 import { DatePicker } from 'primeng/datepicker';
 import { FormsModule } from '@angular/forms';
 import { formatDate } from '@/pages/date-utils';
-import { Select } from 'primeng/select';
+import { MultiSelect } from 'primeng/multiselect';
 
 @Component({
     selector: 'app-data-card',
-    imports: [UIChart, Button, Toolbar, TranslocoPipe, DecimalPipe, DatePicker, FormsModule, Select],
+    imports: [UIChart, Button, Toolbar, TranslocoPipe, DecimalPipe, DatePicker, FormsModule, MultiSelect],
     templateUrl: './data-card.html',
     styleUrl: './data-card.scss',
     providers: []
@@ -23,7 +23,8 @@ export class DataCard implements OnInit {
     pieOptions: any;
     private router = inject(Router);
     private warehouseService = inject(WarehouseService);
-    payload = {
+    selectedWarehouses: string[] = [];
+    payload: any = {
         dateEnd: new Date(),
         warehouse: null
     };
@@ -40,8 +41,6 @@ export class DataCard implements OnInit {
             dateEnd: formatDate(payload.dateEnd), // форматируем ОДИН РАЗ
             warehouse: payload.warehouse
         };
-
-        console.log(payloadToSend);
         this.warehouseService.getData(payloadToSend).subscribe((data) => {
             this.calculateTotalAmount(data);
             if (this.payload.warehouse === null) {
@@ -132,6 +131,13 @@ export class DataCard implements OnInit {
     }
 
     applyFilter() {
+        this.getData(this.payload);
+    }
+    onWarehouseChange() {
+        this.payload.warehouse = this.selectedWarehouses.length
+            ? this.selectedWarehouses.join(',')
+            : null;
+
         this.getData(this.payload);
     }
 }

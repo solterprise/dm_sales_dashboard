@@ -85,12 +85,19 @@
 
         <div class="flex flex-col w-full sm:w-48">
             <label class="mb-1">{{ 'sales.warehouse' | transloco }}</label>
-            <p-select
+            <p-multiSelect
+                [options]="warehouses"
+                placeholder="{{ 'utils.selectWarehouse' | transloco }}"
+                [(ngModel)]="selectedWarehouses"
+                (onChange)="onWarehouseChange()"
+                display="chip">
+            </p-multiSelect>
+<!--            <p-select
                 [options]="warehouses"
                 [placeholder]="'utils.select' | transloco"
                 [(ngModel)]="payload.warehouse"
                 (onChange)="applyFilter()">
-            </p-select>
+            </p-select>-->
         </div>
     </div>
 </div>
