@@ -30,11 +30,13 @@
         "Search": "Căutare",
         "clear": "Resetează",
         "noData": "Nu există date disponibile",
-        "selectSnippet": "Selectează  perioada",
+        "selectSnippet": "Perioada",
         "today": "Ziua curentă",
         "currentMonth": "Luna curentă",
         "currentYear": "Anul curent",
-        "menu": "Meniu"
+        "menu": "Meniu",
+        "selectWarehouse": "Selectează punctul de vanzare",
+        "selectSnippetPlaceholder": "Selectează perioada"
     },
     "warehouse": {
         "title": "Depozit"

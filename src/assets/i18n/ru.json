@@ -30,11 +30,13 @@
         "dateEndPlaceholder": "Выберите дату окончания",
         "clear": "Сбросить",
         "noData": "Данные отсутствуют",
-        "selectSnippet": "Выбрать период",
+        "selectSnippet": "Период",
         "today": "Текущий день",
         "currentMonth": "Текущий месяц",
         "currentYear": "Текущий год",
-        "menu": "Меню"
+        "menu": "Меню",
+        "selectWarehouse": "Выберите точки продаж",
+        "selectSnippetPlaceholder": "Выберите период"
     },
     "warehouse": {
         "title": "Склад"

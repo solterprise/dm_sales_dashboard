@@ -21,31 +21,36 @@
     <p-table #dt1
              [value]="sales"
              [paginator]="true"
+             [loading]="loading"
              [rows]="10"
              [globalFilterFields]="['item', 'price', 'amount']"
              responsiveLayout="scroll">
         <ng-template #caption>
-            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <button
-                    pButton
-                    [label]="'utils.clear'|transloco"
-                    class="bg-teal-700 text-white border-none mt-4"
-                    icon="pi pi-filter-slash"
-                    (click)="clear(dt1)">
-                </button>
+            <div class="flex flex-col gap-4">
+                <div class="flex justify-start">
+                    <button
+                        pButton
+                        [label]="'utils.clear' | transloco"
+                        class="bg-teal-700 text-white border-none"
+                        icon="pi pi-filter-slash"
+                        (click)="clear(dt1)">
+                    </button>
+                </div>
 
-                <div class="flex flex-col sm:flex-row sm:items-end sm:gap-4 gap-3 flex-1">
+                <div class="flex flex-col sm:flex-row sm:items-end sm:gap-4 gap-3 flex-wrap">
 
                     <div class="flex flex-col w-full sm:w-48">
                         <label>{{ 'sales.warehouse' | transloco }}</label>
-                        <p-select
+                        <p-multiSelect
                             [options]="warehouses"
-                            [placeholder]="'utils.select'|transloco"
-                            [(ngModel)]="payload.warehouse"
-                            (onChange)="applyFilter()">
-                        </p-select>
+                            placeholder="{{ 'utils.selectWarehouse' | transloco }}"
+                            [(ngModel)]="selectedWarehouses"
+                            (onChange)="onWarehouseChange()"
+                            display="chip">
+                        </p-multiSelect>
                     </div>
 
+                    <!-- Дата начала -->
                     <div class="flex flex-col w-full sm:w-48">
                         <label>{{ 'utils.dateStart' | transloco }}</label>
                         <p-datepicker
@@ -69,13 +74,14 @@
                         </p-datepicker>
                     </div>
 
+                    <!-- Сниппет -->
                     <div class="flex flex-col w-full sm:w-48">
                         <label>{{ 'utils.selectSnippet' | transloco }}</label>
                         <p-select
                             [options]="snippets"
                             optionLabel="labelKey"
                             optionValue="value"
-                            placeholder="Выберите период"
+                            placeholder="{{ 'utils.selectSnippetPlaceholder' | transloco }}"
                             (onChange)="selectSnippet($event.value)">
                             <ng-template let-option pTemplate="item">
                                 {{ option.labelKey | transloco }}
@@ -89,7 +95,7 @@
                 </div>
 
                 <!-- Поиск -->
-                <div class="flex w-full sm:w-auto  sm:mt-0">
+                <div class="flex w-full sm:w-auto mt-2 sm:mt-0">
                     <p-iconfield iconPosition="left" class="w-full sm:w-auto">
                         <p-inputicon>
                             <i class="pi pi-search"></i>
@@ -105,6 +111,7 @@
 
             </div>
         </ng-template>
+
         <ng-template #header>
             <tr>
                 <th pSortableColumn="item">{{ 'sales.nomenclature'|transloco }}

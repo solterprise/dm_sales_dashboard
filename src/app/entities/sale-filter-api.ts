@@ -1,5 +1,5 @@
 export interface SalesFilterApi {
-    dateStart: string | null;
-    dateEnd: string | null;
+    dateStart: Date | string | null;
+    dateEnd: Date | string | null;
     warehouse: string | null;
 }
