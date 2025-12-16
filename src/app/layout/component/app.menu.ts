@@ -28,15 +28,24 @@ export class AppMenu {
     ngOnInit() {
         this.model = [
             {
-                label: 'Menu',
-                items: [{
-                    label: this.transloco.translate('sales.title'),
-                    icon: 'pi pi-shopping-cart',
-                    routerLink: ['/'] }]
+                label: this.transloco.translate('utils.menu'),
+                items: [
+                    {
+                        label: this.transloco.translate('sales.title'),
+                        icon: 'pi pi-shopping-cart',
+                        routerLink: ['/']
+                    }
+                ]
             },
             {
                 label: '',
-                items: [{ label: 'Склад',  icon: 'pi pi-fw pi-home' , routerLink: ['/uikit/card'] }]
+                items: [
+                    {
+                        label: this.transloco.translate('warehouse.title'),
+                        icon: 'pi pi-fw pi-home',
+                        routerLink: ['/uikit/card']
+                    }
+                ]
             }
         ];
     }

@@ -33,7 +33,8 @@
         "selectSnippet": "Selectează  perioada",
         "today": "Ziua curentă",
         "currentMonth": "Luna curentă",
-        "currentYear": "Anul curent"
+        "currentYear": "Anul curent",
+        "menu": "Meniu"
     },
     "warehouse": {
         "title": "Depozit"

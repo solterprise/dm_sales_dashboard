@@ -33,7 +33,8 @@
         "selectSnippet": "Выбрать период",
         "today": "Текущий день",
         "currentMonth": "Текущий месяц",
-        "currentYear": "Текущий год"
+        "currentYear": "Текущий год",
+        "menu": "Меню"
     },
     "warehouse": {
         "title": "Склад"
