@@ -19,12 +19,6 @@ export class ApiService {
     }
 }
 
-export interface Sale {
-    dateStart: Date | null;
-    dateEnd: Date | null;
-    warehouse: string | null;
-}
-
 export interface SaleResponse {
     amount: number;
     category: string;

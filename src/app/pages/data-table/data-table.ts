@@ -1,44 +1,34 @@
 import { Component, ElementRef, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
-import { CommonModule} from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { RippleModule } from 'primeng/ripple';
 import { Table, TableModule } from 'primeng/table';
 import { IconField } from 'primeng/iconfield';
 import { InputIcon } from 'primeng/inputicon';
 import { InputText } from 'primeng/inputtext';
-import { ApiService, Sale } from '@/@core/api/api-service';
+import { ApiService, SaleResponse } from '@/@core/api/api-service';
 import { SelectModule } from 'primeng/select';
 import { DatePickerModule } from 'primeng/datepicker';
 import { FormsModule } from '@angular/forms';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Toolbar } from 'primeng/toolbar';
+import { getCurrentMonthRange, getCurrentYearRange, formatDate } from '@/pages/date-utils';
+import { SalesFilterApi } from '@/entities/sale-filter-api';
+import { SNIPETS } from '@/pages/data-table/snipets';
 
 @Component({
     selector: 'app-data-table',
-    imports: [
-        CommonModule,
-        TableModule,
-        ButtonModule,
-        RippleModule,
-        IconField,
-        InputIcon,
-        InputText,
-        SelectModule,
-        DatePickerModule,
-        FormsModule,
-        TranslocoPipe,
-        Toolbar
-    ],
+    imports: [CommonModule, TableModule, ButtonModule, RippleModule, IconField, InputIcon, InputText, SelectModule, DatePickerModule, FormsModule, TranslocoPipe, Toolbar],
     templateUrl: './data-table.html',
     styleUrl: './data-table.scss',
     providers: [ApiService]
 })
 export class DataTable implements OnInit {
-    sales!: any[];
+    sales!: SaleResponse[];
     @ViewChild('filter') filter!: ElementRef;
     private dataService = inject(ApiService);
-    totalAmount = signal('');
-    totalDeliveryAmount = signal(0);
+    totalAmount = signal<number>(0);
+    totalDeliveryAmount = signal<number>(0);
     payload = {
         dateStart: getCurrentMonthRange().startDate,
         dateEnd: getCurrentMonthRange().endDate,
@@ -46,11 +36,7 @@ export class DataTable implements OnInit {
     };
     loading = false;
     protected warehouses: string[] = [];
-    snippets = [
-        { labelKey: 'utils.today', value: 'today' },
-        { labelKey: 'utils.currentMonth', value: 'month' },
-        { labelKey: 'utils.currentYear', value: 'year' }
-    ];
+    protected readonly snippets = SNIPETS;
 
     ngOnInit() {
         this.getSales(() => {
@@ -69,19 +55,27 @@ export class DataTable implements OnInit {
     private getSales(onLoaded?: () => void, payload?: SalesFilterApi) {
         this.loading = true;
         const payloadToSend: SalesFilterApi = payload ?? {
-            dateStart: this.formatDate(this.payload.dateStart),
-            dateEnd: this.formatDate(this.payload.dateEnd),
+            dateStart: formatDate(this.payload.dateStart),
+            dateEnd: formatDate(this.payload.dateEnd),
             warehouse: this.payload.warehouse
         };
         this.dataService.getList(payloadToSend).subscribe((x) => {
             this.sales = x!;
-            const total = this.sales.reduce((sum, item) => sum + Number(item.amount), 0);
-            this.totalAmount.set(total);
-            const totalDelivery = this.sales.reduce((sum, item) => sum + Number(item.deliveryQuantity), 0);
-            this.totalDeliveryAmount.set(totalDelivery);
+            this.calculateTotalAmount(this.sales);
+            this.calculateTotalDeliveryAmount(this.sales);
             onLoaded?.();
             this.loading = false;
         });
+    }
+
+    private calculateTotalAmount(sales: SaleResponse[]) {
+        const total = sales.reduce((sum, item) => sum + Number(item.amount), 0);
+        this.totalAmount.set(total);
+    }
+
+    private calculateTotalDeliveryAmount(sales: SaleResponse[]) {
+        const totalDelivery = sales.reduce((sum, item) => sum + Number(item.deliveryQuantity), 0);
+        this.totalDeliveryAmount.set(totalDelivery);
     }
 
     protected clear(table: Table) {
@@ -91,22 +85,11 @@ export class DataTable implements OnInit {
 
     applyFilter() {
         const payloadToSend: SalesFilterApi = {
-            dateStart: this.formatDate(this.payload.dateStart),
-            dateEnd: this.formatDate(this.payload.dateEnd),
+            dateStart: formatDate(this.payload.dateStart),
+            dateEnd: formatDate(this.payload.dateEnd),
             warehouse: this.payload.warehouse
         };
         this.getSales(undefined, payloadToSend);
-    }
-
-    private formatDate(d: Date | string | null): string | null {
-        if (!d) return null;
-
-        const date = new Date(d);
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-
-        return `${year}${month}${day}`;
     }
 
     selectSnippet(snippet: string) {
@@ -131,24 +114,4 @@ export class DataTable implements OnInit {
 
         this.applyFilter();
     }
-}
-
-function getCurrentMonthRange(): { startDate: Date; endDate: Date } {
-    const now = new Date();
-    const first = new Date(now.getFullYear(), now.getMonth(), 1);
-    const last = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-    return { startDate: first, endDate: last };
-}
-
-function getCurrentYearRange(): { startDate: Date; endDate: Date } {
-    const now = new Date();
-    const first = new Date(now.getFullYear(), 0, 1);
-    const last = new Date(now.getFullYear(), 11, 31);
-    return { startDate: first, endDate: last };
-}
-
-interface SalesFilterApi {
-    dateStart: string | null;
-    dateEnd: string | null;
-    warehouse: string | null;
 }

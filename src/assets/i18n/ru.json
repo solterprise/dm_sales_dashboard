@@ -34,5 +34,8 @@
         "today": "Текущий день",
         "currentMonth": "Текущий месяц",
         "currentYear": "Текущий год"
+    },
+    "warehouse": {
+        "title": "Склад"
     }
 }

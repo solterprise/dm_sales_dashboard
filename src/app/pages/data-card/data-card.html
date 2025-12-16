@@ -6,22 +6,91 @@
                   class="mr-2"
                   (click)="goBack()" />
     </ng-template>
-
     <ng-template #end>
-        <p-button label="Export" icon="pi pi-upload" severity="secondary" />
+        <div class="flex flex-col">
+            <span class="text-gray-600">{{ 'sales.totalAmount'| transloco }}</span>
+            <span>{{ totalAmount() | number:'1.2-2' }}</span>
+        </div>
     </ng-template>
 </p-toolbar>
 
-<div class="col-span-12 xl:col-span-6">
-    <div class="card flex flex-col items-start">
-        <div class="font-semibold text-xl mb-4">Doughnut</div>
-        <p-chart type="doughnut" [data]="pieData" [options]="pieOptions" />
+
+<!--<div class="card flex f gap-4">
+        <div class="font-semibold text-xl mb-4">{{'warehouse.title'| transloco}}</div>
+       @if (categories.length>0) {
+        <p-chart
+            class="w-1/2"
+            type="doughnut"
+            [data]="pieData"
+            [options]="pieOptions">
+        </p-chart>
+       } @else {
+           <div  class="text-center text-gray-500 py-4">
+               {{ 'utils.noData'|transloco }}
+           </div>
+       }
+</div>
+<div class="flex flex-col w-full sm:w-48">
+    <label>{{ 'utils.dateEnd' | transloco }}</label>
+    <p-datepicker
+        [showIcon]="true"
+        [showButtonBar]="true"
+        [(ngModel)]="payload.dateEnd"
+        (onSelect)="applyFilter()"
+        [placeholder]="'utils.dateEndPlaceholder' | transloco">
+    </p-datepicker>
+</div>
+<div class="flex flex-col w-full sm:w-48">
+    <label>{{ 'sales.warehouse' | transloco }}</label>
+    <p-select
+        [options]="warehouses"
+        [placeholder]="'utils.select'|transloco"
+        [(ngModel)]="payload.warehouse"
+        (onChange)="applyFilter()">
+    </p-select>
+</div>-->
+
+
+<div class="card p-4 flex flex-col gap-6">
+    <div class="font-semibold text-xl">
+        {{ 'warehouse.title' | transloco }}
+    </div>
+
+    <div class="flex justify-center">
+        @if (categories.length > 0){
+            <p-chart
+                class="w-full sm:w-1/2"
+                type="doughnut"
+                [data]="pieData"
+                [options]="pieOptions">
+            </p-chart>
+        } @else {
+            <div class="text-center text-gray-500 py-10">
+                {{ 'utils.noData' | transloco }}
+            </div>
+        }
+    </div>
+
+    <div class="flex flex-col sm:flex-row gap-4">
+        <div class="flex flex-col w-full sm:w-48">
+            <label class="mb-1">{{ 'utils.dateEnd' | transloco }}</label>
+            <p-datepicker
+                [showIcon]="true"
+                [showButtonBar]="true"
+                [(ngModel)]="payload.dateEnd"
+                (onSelect)="applyFilter()"
+                [placeholder]="'utils.dateEndPlaceholder' | transloco">
+            </p-datepicker>
+        </div>
+
+        <div class="flex flex-col w-full sm:w-48">
+            <label class="mb-1">{{ 'sales.warehouse' | transloco }}</label>
+            <p-select
+                [options]="warehouses"
+                [placeholder]="'utils.select' | transloco"
+                [(ngModel)]="payload.warehouse"
+                (onChange)="applyFilter()">
+            </p-select>
+        </div>
     </div>
 </div>
-<div class="card">
-    <div class="font-semibold text-xl">Tree</div>
-    <p-tree [value]="treeValue" selectionMode="checkbox" [(selection)]="selectedTreeValue"></p-tree>
-    <div class="font-semibold text-xl">Tree</div>
-    <p-tree [value]="treeValue" selectionMode="checkbox" [(selection)]="selectedTreeValue"></p-tree>
-</div>
-

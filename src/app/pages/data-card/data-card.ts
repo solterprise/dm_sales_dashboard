@@ -1,63 +1,106 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { UIChart } from 'primeng/chart';
-import { debounceTime, Subscription } from 'rxjs';
-import { LayoutService } from '@/layout/service/layout.service';
 import { Button } from 'primeng/button';
 import { Toolbar } from 'primeng/toolbar';
-import { Tree } from 'primeng/tree';
-import { TreeNode } from 'primeng/api';
-import { NodeService } from '@/pages/service/node.service';
 import { Router } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
+import { WarehouseService } from '@/pages/data-card/warehouse-service';
+import { DecimalPipe } from '@angular/common';
+import { DatePicker } from 'primeng/datepicker';
+import { FormsModule } from '@angular/forms';
+import { formatDate } from '@/pages/date-utils';
+import { Select } from 'primeng/select';
 
 @Component({
     selector: 'app-data-card',
-    imports: [UIChart, Button, Toolbar, Tree, TranslocoPipe],
+    imports: [UIChart, Button, Toolbar, TranslocoPipe, DecimalPipe, DatePicker, FormsModule, Select],
     templateUrl: './data-card.html',
     styleUrl: './data-card.scss',
-    providers: [NodeService]
+    providers: []
 })
-export class DataCard {
+export class DataCard implements OnInit {
     pieData: any;
     pieOptions: any;
-    subscription: Subscription;
-    treeValue: TreeNode[] = [];
-    selectedTreeValue: TreeNode[] = [];
-    nodeService = inject(NodeService);
     private router = inject(Router);
+    private warehouseService = inject(WarehouseService);
+    payload = {
+        dateEnd: new Date(),
+        warehouse: null
+    };
+    categories: string[] = [];
+    protected warehouses: string[] = [];
+    totalAmount = signal<number>(0);
 
-    constructor(private layoutService: LayoutService) {
-        this.nodeService.getFiles().then((files) => (this.treeValue = files));
-        this.subscription = this.layoutService.configUpdate$.pipe(debounceTime(25)).subscribe(() => {
-            this.initCharts();
+    ngOnInit() {
+        this.getData(this.payload);
+    }
+
+    getData(payload: any) {
+        const payloadToSend = {
+            dateEnd: formatDate(payload.dateEnd), // форматируем ОДИН РАЗ
+            warehouse: payload.warehouse
+        };
+
+        console.log(payloadToSend);
+        this.warehouseService.getData(payloadToSend).subscribe((data) => {
+            this.calculateTotalAmount(data);
+            if (this.payload.warehouse === null) {
+                this.warehouses = this.getUniqueWarehouses(data);
+            }
+            const categoryMap = new Map<string, number>();
+
+            data.forEach((item) => {
+                categoryMap.set(item.category, (categoryMap.get(item.category) ?? 0) + item.quantity);
+            });
+
+            const entries = Array.from(categoryMap.entries()).sort((a, b) => b[1] - a[1]); // по убыванию суммы
+
+            const labels: string[] = [];
+            const values: number[] = [];
+
+            entries.forEach(([key, value]) => {
+                labels.push(`${key} (${value})`);
+                values.push(value);
+            });
+
+            this.categories = labels;
+            this.initCharts(values);
         });
     }
 
-    ngOnInit() {
-        this.initCharts();
-    }
+    initCharts(values: number[]) {
+        const textColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color');
 
-    initCharts() {
-        const documentStyle = getComputedStyle(document.documentElement);
-        const textColor = documentStyle.getPropertyValue('--text-color');
+        const colors = this.generateColors(this.categories.length);
+
+        const hoverColors = colors.map((c) => {
+            const hslMatch = c.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);
+            if (!hslMatch) return c;
+            const [_, h, s, l] = hslMatch;
+            const newLightness = Math.max(20, Number(l) - 10);
+            return `hsl(${h}, ${s}%, ${newLightness}%)`;
+        });
 
         this.pieData = {
-            labels: ['A', 'B', 'C'],
+            labels: this.categories,
             datasets: [
                 {
-                    data: [540, 325, 702],
-                    backgroundColor: [documentStyle.getPropertyValue('--p-indigo-500'), documentStyle.getPropertyValue('--p-purple-500'), documentStyle.getPropertyValue('--p-teal-500')],
-                    hoverBackgroundColor: [documentStyle.getPropertyValue('--p-indigo-400'), documentStyle.getPropertyValue('--p-purple-400'), documentStyle.getPropertyValue('--p-teal-400')]
+                    data: values,
+                    backgroundColor: colors,
+                    hoverBackgroundColor: hoverColors
                 }
             ]
         };
 
         this.pieOptions = {
+            cutout: '10%',
             plugins: {
                 legend: {
                     position: 'right',
+                    display: true,
                     labels: {
                         usePointStyle: true,
+                        boxWidth: 20,
                         color: textColor
                     }
                 }
@@ -65,13 +108,30 @@ export class DataCard {
         };
     }
 
-    ngOnDestroy() {
-        if (this.subscription) {
-            this.subscription.unsubscribe();
-        }
-    }
-
     protected goBack() {
         this.router.navigate(['/']);
+    }
+
+    private generateColors(count: number): string[] {
+        const GOLDEN_ANGLE = 137.508;
+        return Array.from({ length: count }, (_, i) => {
+            const hue = (i * GOLDEN_ANGLE) % 360;
+            const saturation = 65 + (i % 5) * 6;
+            const lightness = 42 + (i % 4) * 6;
+            return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+        });
+    }
+
+    private calculateTotalAmount(sales: any[]) {
+        const total = sales.reduce((sum, item) => sum + Number(item.amount), 0);
+        this.totalAmount.set(total);
+    }
+
+    private getUniqueWarehouses(products: any[]): string[] {
+        return [...new Set(products.map((p) => p.warehouse))];
+    }
+
+    applyFilter() {
+        this.getData(this.payload);
     }
 }

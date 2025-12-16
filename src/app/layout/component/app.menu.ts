@@ -36,7 +36,7 @@ export class AppMenu {
             },
             {
                 label: '',
-                items: [{ label: 'Card', icon: 'pi pi-fw pi-id-card', routerLink: ['/uikit/card'] }]
+                items: [{ label: 'Склад',  icon: 'pi pi-fw pi-home' , routerLink: ['/uikit/card'] }]
             }
         ];
     }

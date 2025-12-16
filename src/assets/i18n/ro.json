@@ -34,5 +34,8 @@
         "today": "Ziua curentă",
         "currentMonth": "Luna curentă",
         "currentYear": "Anul curent"
+    },
+    "warehouse": {
+        "title": "Depozit"
     }
 }
