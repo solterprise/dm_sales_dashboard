@@ -24,5 +24,5 @@ COPY --from=builder /app/dist ./dist
 
 EXPOSE 4000
 
-# Запускаем приложение на порту 4000
-CMD ["serve", "-s", "dist/dm-dashboard/browser", "-l", "4000"]
+# Правильный путь!
+CMD ["serve", "-s", "dist/sakai-ng/browser", "-l", "4000"]
