@@ -11,10 +11,10 @@ jobs:
 
         steps:
             - name: Checkout repository
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
 
             - name: Copy project to VPS
-              uses: appleboy/scp-action@v0.1.4
+              uses: appleboy/scp-action@v0.1.7
               with:
                   host: 167.86.75.246
                   username: root
@@ -24,7 +24,7 @@ jobs:
                   strip_components: 0
 
             - name: Deploy on VPS
-              uses: appleboy/ssh-action@v0.1.8
+              uses: appleboy/ssh-action@v1.0.3
               with:
                   host: 167.86.75.246
                   username: root
@@ -36,7 +36,7 @@ jobs:
                       docker compose down || true
 
                       # Удаляем старый образ dm-dashboard
-                      docker rmi dm-dashboard:latest || true
+                      docker rmi dm-dashboard-dm-dashboard:latest || true
 
                       # Собираем новый образ
                       docker compose build --no-cache
@@ -46,3 +46,6 @@ jobs:
 
                       # Проверяем статус
                       docker compose ps
+
+                      # Выводим логи для проверки
+                      docker compose logs --tail=20 dm-dashboard
