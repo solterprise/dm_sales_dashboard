@@ -27,6 +27,7 @@ import { MultiSelect } from 'primeng/multiselect';
 export class DataTable implements OnInit {
     sales!: SaleResponse[];
     @ViewChild('filter') filter!: ElementRef;
+    @ViewChild('snippetSelect') snippetSelect!: any;
     private dataService = inject(ApiService);
     totalAmount = signal<number>(0);
     totalDeliveryAmount = signal<number>(0);
@@ -83,6 +84,17 @@ export class DataTable implements OnInit {
     protected clear(table: Table) {
         table.clear();
         this.filter.nativeElement.value = '';
+        this.payload = {
+            dateStart: getCurrentMonthRange().startDate,
+            dateEnd: getCurrentMonthRange().endDate,
+            warehouse: null
+        };
+
+        // Сброс выбранных складов
+        this.selectedWarehouses = [];
+        if (this.snippetSelect) this.snippetSelect.clear();
+        // Обновляем данные
+        this.getSales();
     }
 
     applyFilter() {
