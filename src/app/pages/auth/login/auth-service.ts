@@ -2,6 +2,7 @@ import { computed, inject, Injectable, signal } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { Router } from '@angular/router';
 
 @Injectable({
     providedIn: 'root'
@@ -10,7 +11,7 @@ export class AuthService {
     private http = inject(HttpClient);
     private apiUrl = environment.apiUrl;
     private _user = signal<User | null>(null);
-    isLoggedIn = computed(() => this._user() !== null);
+    private router = inject(Router);
 
     login(req: User): Observable<LoginResponse> {
         const headers = new HttpHeaders({
@@ -27,13 +28,10 @@ export class AuthService {
     }
 
 
-    logout(): Observable<LogoutResponse> {
+    logout(): void {
         this._user.set(null);
-        return this.http.post<LogoutResponse>(`${this.apiUrl}/logout`, {});
-    }
-
-    get user() {
-        return this._user;
+        localStorage.removeItem('token');
+        this.router.navigate(['/auth/login']);
     }
 }
 
@@ -44,9 +42,4 @@ export interface User {
 
 export interface LoginResponse {
     token: string;
-}
-
-interface LogoutResponse {
-    success: boolean;
-    message?: string;
 }
