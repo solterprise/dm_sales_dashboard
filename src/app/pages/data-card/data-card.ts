@@ -1,19 +1,21 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { UIChart } from 'primeng/chart';
-import { Button } from 'primeng/button';
+import { Button, ButtonDirective } from 'primeng/button';
 import { Toolbar } from 'primeng/toolbar';
 import { Router } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { WarehouseService } from '@/pages/data-card/warehouse-service';
-import { DecimalPipe, NgForOf } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 import { DatePicker } from 'primeng/datepicker';
 import { FormsModule } from '@angular/forms';
 import { formatDate } from '@/pages/date-utils';
 import { MultiSelect } from 'primeng/multiselect';
+import { finalize } from 'rxjs';
+import { ProgressSpinner } from 'primeng/progressspinner';
 
 @Component({
     selector: 'app-data-card',
-    imports: [UIChart, Button, Toolbar, TranslocoPipe, DecimalPipe, DatePicker, FormsModule, MultiSelect, NgForOf],
+    imports: [UIChart, Button, Toolbar, TranslocoPipe, DecimalPipe, DatePicker, FormsModule, MultiSelect, ButtonDirective, ProgressSpinner],
     templateUrl: './data-card.html',
     styleUrl: './data-card.scss',
     providers: []
@@ -31,47 +33,83 @@ export class DataCard implements OnInit {
     categories: string[] = [];
     protected warehouses: string[] = [];
     totalAmount = signal<number>(0);
+    topN = 10;
+    showAllCategories = false;
+    displayCategories: string[] = [];
+    displayValues: number[] = [];
+    isLoading = false;
 
     ngOnInit() {
         this.getData(this.payload);
     }
 
+
+    toggleShowAllCategories() {
+        this.showAllCategories = !this.showAllCategories;
+        this.getData(this.payload);
+    }
+
     getData(payload: any) {
+        this.isLoading = true;
         const payloadToSend = {
-            dateEnd: formatDate(payload.dateEnd), // форматируем ОДИН РАЗ
+            dateEnd: formatDate(payload.dateEnd),
             warehouse: payload.warehouse
         };
-        this.warehouseService.getData(payloadToSend).subscribe((data) => {
-            this.calculateTotalAmount(data);
-            if (this.payload.warehouse === null) {
-                this.warehouses = this.getUniqueWarehouses(data);
-            }
-            const categoryMap = new Map<string, number>();
+        this.warehouseService
+            .getData(payloadToSend)
+            .pipe(finalize(() => (this.isLoading = false)))
+            .subscribe((data) => {
+                this.calculateTotalAmount(data);
+                if (this.payload.warehouse === null) {
+                    this.warehouses = this.getUniqueWarehouses(data);
+                }
+                const categoryMap = new Map<string, number>();
 
-            data.forEach((item) => {
-                categoryMap.set(item.category, (categoryMap.get(item.category) ?? 0) + item.quantity);
+                data.forEach((item) => {
+                    categoryMap.set(item.category, (categoryMap.get(item.category) ?? 0) + item.quantity);
+                });
+
+                const entries = Array.from(categoryMap.entries()).sort((a, b) => b[1] - a[1]);
+
+                const labels: string[] = [];
+                const values: number[] = [];
+
+                entries.forEach(([key, value]) => {
+                    labels.push(key);
+                    values.push(value);
+                });
+
+                this.categories = labels;
+
+                let displayLabels: string[];
+                let displayValues: number[];
+
+                if (!this.showAllCategories) {
+                    displayLabels = labels.slice(0, this.topN);
+                    displayValues = values.slice(0, this.topN);
+                    const othersSum = values.slice(this.topN).reduce((a, b) => a + b, 0);
+                    if (othersSum > 0) {
+                        displayLabels.push('Other');
+                        displayValues.push(othersSum);
+                    }
+                } else {
+                    displayLabels = labels;
+                    displayValues = values;
+                }
+
+                const totalSum = displayValues.reduce((a, b) => a + b, 0);
+                this.displayCategories = displayLabels.map((label, i) => `${label} (${displayValues[i]}) - ${((displayValues[i]/totalSum)*100).toFixed(5)}%`);
+                this.displayValues = displayValues;
+
+                this.initCharts(this.displayValues);
             });
-
-            const entries = Array.from(categoryMap.entries()).sort((a, b) => b[1] - a[1]); // по убыванию суммы
-
-            const labels: string[] = [];
-            const values: number[] = [];
-
-            entries.forEach(([key, value]) => {
-                labels.push(`${key} (${value})`);
-                values.push(value);
-            });
-
-            this.categories = labels;
-            this.initCharts(values);
-        });
     }
+
+
 
     initCharts(values: number[]) {
         const textColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color');
-
         const colors = this.generateColors(this.categories.length);
-
         const hoverColors = colors.map((c) => {
             const hslMatch = c.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);
             if (!hslMatch) return c;
@@ -81,7 +119,7 @@ export class DataCard implements OnInit {
         });
 
         this.pieData = {
-            labels: this.categories,
+            labels: this.displayCategories,
             datasets: [
                 {
                     data: values,
@@ -97,7 +135,8 @@ export class DataCard implements OnInit {
             cutout: '10%',
             plugins: {
                 legend: {
-                    position: 'right',
+                    position: 'bottom',
+                    align: 'start',
                     display: window.innerWidth > 640,
                     labels: {
                         usePointStyle: true,
@@ -142,3 +181,4 @@ export class DataCard implements OnInit {
         this.getData(this.payload);
     }
 }
+

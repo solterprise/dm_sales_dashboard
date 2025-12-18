@@ -1,3 +1,9 @@
+@if (isLoading) {
+    <div class="fixed inset-0 z-[9999] bg-white/70 flex items-center justify-center">
+        <p-progressSpinner strokeWidth="4" styleClass="w-14 h-14"/>
+    </div>
+}
+
 <p-toolbar styleClass="mb-6">
     <ng-template #start>
         <p-button [label]="'utils.back'| transloco"
@@ -13,41 +19,8 @@
         </div>
     </ng-template>
 </p-toolbar>
-<!--
+
 <div class="card p-4 flex flex-col gap-6">
-    <div class="font-semibold text-xl">
-        {{ 'warehouse.title' | transloco }}
-    </div>
-
-    <div class="w-full">
-        @if (categories.length > 0) {
-            <div class="flex flex-col sm:flex-row gap-4 w-full">
-
-                &lt;!&ndash; CHART &ndash;&gt;
-                <div class="w-full! sm:w-1/2  h-80">
-                    <p-chart
-                        class="w-full h-full"
-                        type="doughnut"
-                        [data]="pieData"
-                        [options]="pieOptions">
-                    </p-chart>
-                </div>
-
-                <div class="w-full  max-h-80 overflow-auto mt-4 none">
-                    <div *ngFor="let c of categories" class="flex justify-between py-1">
-                        <span>{{ c }}</span>
-                    </div>
-                </div>
-
-            </div>
-        } @else {
-            <div class="text-center text-gray-500 py-10">
-                {{ 'utils.noData' | transloco }}
-            </div>
-        }
-    </div>
-
-
     <div class="flex flex-col sm:flex-row gap-4 mt-4">
         <div class="flex flex-col w-full sm:w-48">
             <label class="mb-1">{{ 'utils.dateEnd' | transloco }}</label>
@@ -55,70 +28,7 @@
                 [showIcon]="true"
                 [showButtonBar]="true"
                 [(ngModel)]="payload.dateEnd"
-                (onSelect)="applyFilter()"
-                [placeholder]="'utils.dateEndPlaceholder' | transloco">
-            </p-datepicker>
-        </div>
-
-        <div class="flex flex-col w-full sm:w-48">
-            <label class="mb-1">{{ 'sales.warehouse' | transloco }}</label>
-            <p-multiSelect
-                [options]="warehouses"
-                placeholder="{{ 'utils.selectWarehouse' | transloco }}"
-                [(ngModel)]="selectedWarehouses"
-                (onChange)="onWarehouseChange()"
-                display="chip"
-                [emptyMessage]=" 'utils.noResultsFound' | transloco "
-                [emptyFilterMessage]=" 'utils.noResultsFound' | transloco ">
-            </p-multiSelect>
-        </div>
-    </div>
-</div>
--->
-<div class="card p-4 flex flex-col gap-6">
-    <div class="font-semibold text-xl">
-        {{ 'warehouse.title' | transloco }}
-    </div>
-
-    <div class="w-full">
-        @if (categories.length > 0) {
-            <div class="flex flex-col sm:flex-row gap-4 w-full">
-
-                <!-- CHART -->
-                <div class="w-full! sm:w-1/2 h-80">
-                    <p-chart
-                        class="w-full h-full"
-                        type="doughnut"
-                        [data]="pieData"
-                        [options]="pieOptions">
-                    </p-chart>
-                </div>
-
-                <!-- LIST: ТОЛЬКО МОБИЛКА -->
-                <div class="w-full sm:hidden max-h-80 overflow-auto mt-4">
-                    <div *ngFor="let c of categories" class="flex justify-between py-1">
-                        <span>{{ c }}</span>
-                    </div>
-                </div>
-
-            </div>
-        } @else {
-            <div class="text-center text-gray-500 py-10">
-                {{ 'utils.noData' | transloco }}
-            </div>
-        }
-    </div>
-
-    <!-- FILTERS -->
-    <div class="flex flex-col sm:flex-row gap-4 mt-4">
-        <div class="flex flex-col w-full sm:w-48">
-            <label class="mb-1">{{ 'utils.dateEnd' | transloco }}</label>
-            <p-datepicker
-                [showIcon]="true"
-                [showButtonBar]="true"
-                [(ngModel)]="payload.dateEnd"
-                (onSelect)="applyFilter()">
-            </p-datepicker>
+                (onSelect)="applyFilter()"/>
         </div>
 
         <div class="flex flex-col w-full sm:w-48">
@@ -132,5 +42,43 @@
                 [emptyMessage]=" 'utils.noResultsFound' | transloco "
                 [emptyFilterMessage]=" 'utils.noResultsFound' | transloco "/>
         </div>
+        <div class="flex flex-col w-full sm:w-48">
+            <button pButton type="button" class="mt-5"
+                    label="{{ showAllCategories ? 'Показать меньше' : 'Показать все' }}"
+                    (click)="toggleShowAllCategories()">
+            </button>
+        </div>
+
+        </div>
+
+    <div class="font-semibold text-xl">
+        {{ 'warehouse.title' | transloco }}
+    </div>
+
+    <div class="w-full">
+        @if (categories.length > 0) {
+            <div class="flex flex-col sm:flex-row gap-4">
+                <div class="w-full! sm:w-1/2 h-80">
+                    <p-chart
+                        class="w-full h-full overflow-x-auto"
+                        type="doughnut"
+                        [data]="pieData"
+                        [options]="pieOptions">
+                    </p-chart>
+                </div>
+                <div class="w-full sm:hidden mt-4">
+                    @for (c of displayCategories; track $index){
+                        <div class="flex justify-between py-1">
+                            <span>{{ c }}</span>
+                        </div>
+                    }
+                </div>
+
+            </div>
+        } @else {
+            <div class="text-center text-gray-500 py-10">
+                {{ 'utils.noData' | transloco }}
+            </div>
+        }
     </div>
 </div>

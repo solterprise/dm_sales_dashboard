@@ -1,20 +1,19 @@
 import { HttpInterceptorFn, HttpRequest, HttpEvent, HttpHandlerFn } from '@angular/common/http';
+import { inject } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 export const authorizeInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, next: HttpHandlerFn): Observable<HttpEvent<any>> => {
-    // Получаем токен
     const token = localStorage.getItem('token');
-
-    // Клонируем запрос и добавляем заголовок 'token'
+    const router = inject(Router);
     const authReq = token ? req.clone({ setHeaders: { token } }) : req;
 
-    // Пропускаем дальше и обрабатываем ошибки
     return next(authReq).pipe(
         catchError(err => {
-            if (err.status === 401) {
+            if (err.status === 401 || err.status === 403) {
                 console.log('Не авторизован!');
-                // можно редирект или логаут
+                 router.navigate(['/auth/login']);
             }
             return throwError(() => err);
         })
