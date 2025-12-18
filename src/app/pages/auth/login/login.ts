@@ -10,21 +10,12 @@ import { TranslocoModule } from '@jsverse/transloco';
 import { AuthService, User } from '@/pages/auth/login/auth-service';
 import { finalize } from 'rxjs';
 import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
     selector: 'app-login',
     standalone: true,
-    imports: [
-        ButtonModule,
-        CheckboxModule,
-        InputTextModule,
-        PasswordModule,
-        FormsModule,
-        RouterModule,
-        RippleModule,
-        TranslocoModule,
-        ReactiveFormsModule
-    ],
+    imports: [ButtonModule, CheckboxModule, InputTextModule, PasswordModule, FormsModule, RouterModule, RippleModule, TranslocoModule, ReactiveFormsModule, ToastModule],
     templateUrl: './login.html',
     providers: [MessageService]
 })
@@ -32,7 +23,7 @@ export class Login {
     private readonly authService = inject(AuthService);
     private readonly router = inject(Router);
     protected isLoading = false;
-    private messageService = inject(MessageService)
+    private messageService = inject(MessageService);
 
     loginForm = new FormGroup({
         user: new FormControl('', Validators.required),
@@ -54,7 +45,9 @@ export class Login {
                     this.router.navigate(['/']);
                 },
                 error: (error) => {
-                    this.messageService.add({ severity: 'contrast', summary: 'Error', detail: 'Message Content' });
+                    if (error.status === 401) {
+                        this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: 'Не удалось авторизоваться',    life: 5000  });
+                    }
                     console.log(error);
                 }
             });
