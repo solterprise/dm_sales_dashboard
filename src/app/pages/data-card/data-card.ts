@@ -98,7 +98,7 @@ export class DataCard implements OnInit {
                 }
 
                 const totalSum = displayValues.reduce((a, b) => a + b, 0);
-                this.displayCategories = displayLabels.map((label, i) => `${label} (${displayValues[i]}) - ${((displayValues[i]/totalSum)*100).toFixed(5)}%`);
+                this.displayCategories = displayLabels.map((label, i) => `${label} (${displayValues[i]}) - ${((displayValues[i]/totalSum)*100).toFixed(2)}%`);
                 this.displayValues = displayValues;
 
                 this.initCharts(this.displayValues);

@@ -90,10 +90,8 @@ export class DataTable implements OnInit {
             warehouse: null
         };
 
-        // Сброс выбранных складов
         this.selectedWarehouses = [];
         if (this.snippetSelect) this.snippetSelect.clear();
-        // Обновляем данные
         this.getSales();
     }
 
