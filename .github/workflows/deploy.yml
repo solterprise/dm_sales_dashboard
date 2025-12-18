@@ -1,0 +1,51 @@
+name: Deploy to VPS
+
+on:
+    push:
+        branches:
+            - main
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Copy project to VPS
+              uses: appleboy/scp-action@v0.1.7
+              with:
+                  host: 167.86.75.246
+                  username: root
+                  key: ${{ secrets.SOLTERPRISE_PRIVATE_SSH_KEY }}
+                  source: "."
+                  target: "/opt/dm-dashboard"
+                  strip_components: 0
+
+            - name: Deploy on VPS
+              uses: appleboy/ssh-action@v1.0.3
+              with:
+                  host: 167.86.75.246
+                  username: root
+                  key: ${{ secrets.SOLTERPRISE_PRIVATE_SSH_KEY }}
+                  script: |
+                      cd /opt/dm-dashboard
+
+                      # Останавливаем только этот контейнер
+                      docker compose down || true
+
+                      # Удаляем старый образ dm-dashboard
+                      docker rmi dm-dashboard-dm-dashboard:latest || true
+
+                      # Собираем новый образ
+                      docker compose build --no-cache
+
+                      # Запускаем новый контейнер
+                      docker compose up -d
+
+                      # Проверяем статус
+                      docker compose ps
+
+                      # Выводим логи для проверки
+                      docker compose logs --tail=20 dm-dashboard
