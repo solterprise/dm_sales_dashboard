@@ -5,7 +5,7 @@ import { Toolbar } from 'primeng/toolbar';
 import { Router } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { WarehouseService } from '@/pages/data-card/warehouse-service';
-import { DecimalPipe } from '@angular/common';
+import { DecimalPipe, NgForOf } from '@angular/common';
 import { DatePicker } from 'primeng/datepicker';
 import { FormsModule } from '@angular/forms';
 import { formatDate } from '@/pages/date-utils';
@@ -13,7 +13,7 @@ import { MultiSelect } from 'primeng/multiselect';
 
 @Component({
     selector: 'app-data-card',
-    imports: [UIChart, Button, Toolbar, TranslocoPipe, DecimalPipe, DatePicker, FormsModule, MultiSelect],
+    imports: [UIChart, Button, Toolbar, TranslocoPipe, DecimalPipe, DatePicker, FormsModule, MultiSelect, NgForOf],
     templateUrl: './data-card.html',
     styleUrl: './data-card.scss',
     providers: []
@@ -92,11 +92,13 @@ export class DataCard implements OnInit {
         };
 
         this.pieOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
             cutout: '10%',
             plugins: {
                 legend: {
                     position: 'right',
-                    display: true,
+                    display: window.innerWidth > 640,
                     labels: {
                         usePointStyle: true,
                         boxWidth: 20,
@@ -135,9 +137,7 @@ export class DataCard implements OnInit {
     }
 
     onWarehouseChange() {
-        this.payload.warehouse = this.selectedWarehouses.length
-            ? this.selectedWarehouses.join(',')
-            : null;
+        this.payload.warehouse = this.selectedWarehouses.length ? this.selectedWarehouses.join(',') : null;
 
         this.getData(this.payload);
     }

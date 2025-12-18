@@ -10,11 +10,18 @@ export class WarehouseService {
     private http = inject(HttpClient);
     private apiUrl = environment.apiUrl;
 
-    getData(payload: any){
-        const params = new HttpParams()
-            .set('dateStart', payload.dateStart)
-            .set('dateEnd', payload.dateEnd)
-            .set('warehouse', payload.warehouse!);
-        return this.http.get<SaleResponse[]>(`${this.apiUrl}balances/getBalances`, { params });
+    getData(payload: any) {
+        let params = new HttpParams()
+            .set('dateEnd', payload.dateEnd);
+
+        if (payload.warehouse != null) {
+            params = params.set('warehouse', payload.warehouse);
+        }
+
+        return this.http.get<SaleResponse[]>(
+            `${this.apiUrl}balances/getBalances`,
+            { params }
+        );
     }
+
 }

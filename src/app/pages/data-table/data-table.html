@@ -40,7 +40,7 @@
                 <div class="flex flex-col sm:flex-row sm:items-end sm:gap-4 gap-3 flex-wrap">
 
                     <div class="flex flex-col w-full sm:w-48">
-                        <label>{{ 'sales.warehouse' | transloco }}</label>
+                        <label class="mb-2">{{ 'sales.warehouse' | transloco }}</label>
                         <p-multiSelect
                             [options]="warehouses"
                             placeholder="{{ 'utils.selectWarehouse' | transloco }}"
@@ -54,7 +54,7 @@
 
                     <!-- Дата начала -->
                     <div class="flex flex-col w-full sm:w-48">
-                        <label>{{ 'utils.dateStart' | transloco }}</label>
+                        <label class="mb-2">{{ 'utils.dateStart' | transloco }}</label>
                         <p-datepicker
                             [showIcon]="true"
                             [showButtonBar]="true"
@@ -66,7 +66,7 @@
 
                     <!-- Дата конца -->
                     <div class="flex flex-col w-full sm:w-48">
-                        <label>{{ 'utils.dateEnd' | transloco }}</label>
+                        <label class="mb-2">{{ 'utils.dateEnd' | transloco }}</label>
                         <p-datepicker
                             [showIcon]="true"
                             [showButtonBar]="true"
@@ -78,7 +78,7 @@
 
                     <!-- Сниппет -->
                     <div class="flex flex-col w-full sm:w-48">
-                        <label>{{ 'utils.selectSnippet' | transloco }}</label>
+                        <label class="mb-2">{{ 'utils.selectSnippet' | transloco }}</label>
                         <p-select
                             [options]="snippets"
                             optionLabel="labelKey"
