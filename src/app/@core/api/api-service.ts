@@ -11,10 +11,12 @@ export class ApiService {
     private apiUrl = environment.apiUrl;
 
     public getList(payload: any): Observable<SaleResponse[]> {
-        const params = new HttpParams()
+        let params = new HttpParams()
             .set('dateStart', payload.dateStart)
-            .set('dateEnd', payload.dateEnd)
-            .set('warehouse', payload.warehouse!);
+            .set('dateEnd', payload.dateEnd);
+        if (payload.warehouse) {
+            params = params.set('warehouse', payload.warehouse);
+        }
         return this.http.get<SaleResponse[]>(`${this.apiUrl}sales/getSales`, { params });
     }
 }

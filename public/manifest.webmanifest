@@ -1,6 +1,6 @@
 {
-  "name": "sakai-ng",
-  "short_name": "sakai-ng",
+  "name": "Data Management",
+  "short_name": "DM",
   "display": "standalone",
   "scope": "./",
   "start_url": "./",

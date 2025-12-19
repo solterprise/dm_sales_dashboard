@@ -56,11 +56,12 @@ export class AppTopbar {
     private authService = inject(AuthService);
     private langService = inject(TranslocoService);
     currentLang = signal<string>('');
+    private transloco = inject(TranslocoService);
 
     constructor(public layoutService: LayoutService) {
         this.items = [
             {
-                label: 'Выход',
+                label: this.transloco.translate('utils.logout'),
                 icon: 'pi pi-fw pi-sign-out',
                 command: () => this.logout()
             }

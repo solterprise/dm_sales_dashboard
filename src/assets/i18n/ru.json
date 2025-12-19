@@ -37,7 +37,10 @@
         "menu": "Меню",
         "selectWarehouse": "Выберите точки продаж",
         "selectSnippetPlaceholder": "Выберите период",
-        "noResultsFound": "Ничего не найдено"
+        "noResultsFound": "Ничего не найдено",
+        "showAll": "Показать все",
+        "showLess": "Показать меньше",
+        "logout": "Выйти"
     },
     "warehouse": {
         "title": "Склад"
