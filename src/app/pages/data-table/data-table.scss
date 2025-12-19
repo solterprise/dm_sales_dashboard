@@ -1,0 +1,27 @@
+/* Header */
+:host ::ng-deep .custom-table .p-datatable-thead > tr > th {
+    background-color: #374151; /* тёмно-серый */
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 12px;
+    border-color: #4b5563;
+}
+
+/* Иконка сортировки */
+:host ::ng-deep .custom-table .p-sortable-column-icon {
+    color: #e5e7eb;
+}
+
+/* Hover на header */
+:host ::ng-deep .custom-table .p-sortable-column:hover {
+    background-color: #1f2937;
+}
+
+/* Чередование строк */
+:host ::ng-deep .custom-table .p-datatable-tbody > tr:nth-child(even) {
+    background-color: #f9fafb; /* light grey */
+}
+
+:host ::ng-deep .custom-table .p-datatable-tbody > tr:nth-child(odd) {
+    background-color: #ffffff;
+}

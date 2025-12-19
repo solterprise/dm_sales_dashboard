@@ -1,6 +1,6 @@
 @if (isLoading) {
     <div class="fixed inset-0 z-[9999] bg-white/70 flex items-center justify-center">
-        <p-progressSpinner strokeWidth="4" styleClass="w-14 h-14"/>
+        <p-progressSpinner strokeWidth="4" styleClass="w-14 h-14" />
     </div>
 }
 
@@ -15,7 +15,7 @@
     <ng-template #end>
         <div class="flex flex-col">
             <span class="text-gray-600">{{ 'sales.totalAmount'| transloco }}</span>
-            <span>{{ totalAmount() | number:'1.2-2' }}</span>
+            <span>{{ totalAmount() | number:'1.0-0' }}</span>
         </div>
     </ng-template>
 </p-toolbar>
@@ -28,7 +28,7 @@
                 [showIcon]="true"
                 [showButtonBar]="true"
                 [(ngModel)]="payload.dateEnd"
-                (onSelect)="applyFilter()"/>
+                (onSelect)="applyFilter()" />
         </div>
 
         <div class="flex flex-col w-full sm:w-48">
@@ -40,16 +40,18 @@
                 (onChange)="onWarehouseChange()"
                 display="chip"
                 [emptyMessage]=" 'utils.noResultsFound' | transloco "
-                [emptyFilterMessage]=" 'utils.noResultsFound' | transloco "/>
+                [emptyFilterMessage]=" 'utils.noResultsFound' | transloco " />
         </div>
         <div class="flex flex-col w-full sm:w-48">
             <button pButton type="button" class="mt-5"
-                    label="{{ showAllCategories ? 'Показать меньше' : 'Показать все' }}"
+                    [label]="showAllCategories
+        ? ('utils.showLess' | transloco)
+        : ('utils.showAll' | transloco)"
                     (click)="toggleShowAllCategories()">
             </button>
         </div>
 
-        </div>
+    </div>
 
     <div class="font-semibold text-xl">
         {{ 'warehouse.title' | transloco }}
@@ -67,7 +69,7 @@
                     </p-chart>
                 </div>
                 <div class="w-full sm:hidden mt-4">
-                    @for (c of displayCategories; track $index){
+                    @for (c of displayCategories; track $index) {
                         <div class="flex justify-between py-1">
                             <span>{{ c }}</span>
                         </div>

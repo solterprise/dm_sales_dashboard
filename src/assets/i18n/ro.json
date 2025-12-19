@@ -37,7 +37,10 @@
         "menu": "Meniu",
         "selectWarehouse": "Selectează punctul de vanzare",
         "selectSnippetPlaceholder": "Selectează perioada",
-        "noResultsFound": "Nu s-au găsit rezultate"
+        "noResultsFound": "Nu s-au găsit rezultate",
+        "showAll": "Arată tot",
+        "showLess": "Arată mai puțin",
+        "logout": "Deconectare"
 
     },
     "warehouse": {

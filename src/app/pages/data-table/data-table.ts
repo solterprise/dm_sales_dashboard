@@ -31,6 +31,8 @@ export class DataTable implements OnInit {
     private dataService = inject(ApiService);
     totalAmount = signal<number>(0);
     totalDeliveryAmount = signal<number>(0);
+    @ViewChild('warehouseSelect') warehouseSelect!: MultiSelect;
+
     selectedWarehouses: string[] = [];
     payload: SalesFilterApi = {
         dateStart: getCurrentMonthRange().startDate,
@@ -61,8 +63,9 @@ export class DataTable implements OnInit {
             warehouse: this.payload.warehouse
         };
         this.dataService.getList(payloadToSend).subscribe((x) => {
-            this.sales = x!;
-            if (this.payload.warehouse === null) {
+            this.sales = (x ?? []).sort(
+                (a, b) => Number(b.amount) - Number(a.amount)
+            );            if (this.payload.warehouse === null) {
                 this.warehouses = this.getUniqueWarehouses(this.sales);
             }
             this.calculateTotalAmount(this.sales);
@@ -133,6 +136,18 @@ export class DataTable implements OnInit {
             : null;
 
         this.getSales();
+        this.restartCloseTimer();
     }
 
+    private closeTimer: any = null;
+
+    private restartCloseTimer() {
+        if (this.closeTimer) {
+            clearTimeout(this.closeTimer);
+        }
+
+        this.closeTimer = setTimeout(() => {
+            this.warehouseSelect?.hide();
+        }, 3000);
+    }
 }
