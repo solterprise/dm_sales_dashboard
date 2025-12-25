@@ -16,6 +16,7 @@ import { getCurrentMonthRange, getCurrentYearRange, formatDate } from '@/pages/d
 import { SalesFilterApi } from '@/entities/sale-filter-api';
 import { SNIPETS } from '@/pages/data-table/snipets';
 import { MultiSelect } from 'primeng/multiselect';
+import { WarehouseService } from '@/pages/data-card/warehouse-service';
 
 @Component({
     selector: 'app-data-table',
@@ -32,7 +33,6 @@ export class DataTable implements OnInit {
     totalAmount = signal<number>(0);
     totalDeliveryAmount = signal<number>(0);
     @ViewChild('warehouseSelect') warehouseSelect!: MultiSelect;
-
     selectedWarehouses: string[] = [];
     payload: SalesFilterApi = {
         dateStart: getCurrentMonthRange().startDate,
@@ -42,6 +42,9 @@ export class DataTable implements OnInit {
     loading = false;
     protected warehouses: string[] = [];
     protected readonly snippets = SNIPETS;
+    private warehouseService = inject(WarehouseService);
+    protected stockQuantity = signal<number>(0);
+    private closeTimer: any = null;
 
     ngOnInit() {
         this.getSales();
@@ -63,13 +66,16 @@ export class DataTable implements OnInit {
             warehouse: this.payload.warehouse
         };
         this.dataService.getList(payloadToSend).subscribe((x) => {
-            this.sales = (x ?? []).sort(
-                (a, b) => Number(b.amount) - Number(a.amount)
-            );            if (this.payload.warehouse === null) {
+            this.sales = (x ?? []).sort((a, b) => Number(b.amount) - Number(a.amount));
+            if (this.payload.warehouse === null) {
                 this.warehouses = this.getUniqueWarehouses(this.sales);
             }
             this.calculateTotalAmount(this.sales);
             this.calculateTotalDeliveryAmount(this.sales);
+            this.getStockQuantity({
+                dateEnd: payloadToSend.dateEnd,
+                warehouse: payloadToSend.warehouse
+            });
             this.loading = false;
         });
     }
@@ -131,15 +137,11 @@ export class DataTable implements OnInit {
     }
 
     onWarehouseChange() {
-        this.payload.warehouse = this.selectedWarehouses.length
-            ? this.selectedWarehouses.join(',')
-            : null;
+        this.payload.warehouse = this.selectedWarehouses.length ? this.selectedWarehouses.join(',') : null;
 
         this.getSales();
         this.restartCloseTimer();
     }
-
-    private closeTimer: any = null;
 
     private restartCloseTimer() {
         if (this.closeTimer) {
@@ -149,5 +151,15 @@ export class DataTable implements OnInit {
         this.closeTimer = setTimeout(() => {
             this.warehouseSelect?.hide();
         }, 3000);
+    }
+
+    private getStockQuantity(payload: any) {
+        this.warehouseService.getData(payload).subscribe((data) => {
+            const stockQuantity = data.reduce(
+                (sum, item) => sum + Number(item.amount ?? 0),
+                0
+            );
+            this.stockQuantity.set(stockQuantity);
+        })
     }
 }

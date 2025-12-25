@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { UIChart } from 'primeng/chart';
 import { Button, ButtonDirective } from 'primeng/button';
 import { Toolbar } from 'primeng/toolbar';
@@ -8,10 +8,11 @@ import { WarehouseService } from '@/pages/data-card/warehouse-service';
 import { DecimalPipe } from '@angular/common';
 import { DatePicker } from 'primeng/datepicker';
 import { FormsModule } from '@angular/forms';
-import { formatDate } from '@/pages/date-utils';
+import { formatDate, getCurrentMonthRange } from '@/pages/date-utils';
 import { MultiSelect } from 'primeng/multiselect';
 import { finalize } from 'rxjs';
 import { ProgressSpinner } from 'primeng/progressspinner';
+import { ApiService } from '@/@core/api/api-service';
 
 @Component({
     selector: 'app-data-card',
@@ -25,9 +26,13 @@ export class DataCard implements OnInit {
     pieOptions: any;
     private router = inject(Router);
     private warehouseService = inject(WarehouseService);
+    private dataService = inject(ApiService);
+    @ViewChild('warehouseSelect') warehouseSelect!: MultiSelect;
+
     selectedWarehouses: string[] = [];
     payload: any = {
-        dateEnd: new Date(),
+        dateStart: getCurrentMonthRange().startDate,
+        dateEnd: getCurrentMonthRange().endDate,
         warehouse: null
     };
     categories: string[] = [];
@@ -52,11 +57,11 @@ export class DataCard implements OnInit {
     getData(payload: any) {
         this.isLoading = true;
         const payloadToSend = {
+            dateStart: formatDate(payload.dateStart),
             dateEnd: formatDate(payload.dateEnd),
             warehouse: payload.warehouse
         };
-        this.warehouseService
-            .getData(payloadToSend)
+        this.dataService.getList(payloadToSend)
             .pipe(finalize(() => (this.isLoading = false)))
             .subscribe((data) => {
                 this.calculateTotalAmount(data);
@@ -182,6 +187,29 @@ export class DataCard implements OnInit {
         this.payload.warehouse = this.selectedWarehouses.length ? this.selectedWarehouses.join(',') : null;
 
         this.getData(this.payload);
+        this.restartCloseTimer();
     }
+    private closeTimer: any = null;
+    private restartCloseTimer() {
+        if (this.closeTimer) {
+            clearTimeout(this.closeTimer);
+        }
+
+        this.closeTimer = setTimeout(() => {
+            this.warehouseSelect?.hide();
+        }, 3000);
+    }
+
+    protected clear() {
+        this.payload = {
+            dateStart: getCurrentMonthRange().startDate,
+            dateEnd: getCurrentMonthRange().endDate,
+            warehouse: null
+        };
+
+        this.selectedWarehouses = [];
+        this.getData(this.payload);
+    }
+
 }
 
