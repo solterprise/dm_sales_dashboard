@@ -1,9 +1,13 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SalesService {
+    sales = signal<any[]>([])
 
-  calculateSum () {}
+    getLocalData(): any[] {
+        return this.sales();
+    }
+
 }

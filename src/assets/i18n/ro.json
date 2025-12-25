@@ -17,7 +17,8 @@
         "amount": "Sumă",
         "quantity": "Cantitate",
         "totalAmount": "Suma totală",
-        "deliveryAmount" : "Suma livrării"
+        "deliveryAmount" : "Suma livrării",
+        "stock": "Stoc"
     },
     "utils": {
         "back": "Înapoi",
@@ -40,10 +41,10 @@
         "noResultsFound": "Nu s-au găsit rezultate",
         "showAll": "Arată tot",
         "showLess": "Arată mai puțin",
-        "logout": "Deconectare"
-
+        "logout": "Deconectare",
+        "itemsSelected": "A-ti selectat {{count}}"
     },
     "warehouse": {
-        "title": "Depozit"
+        "title": "Vânzări pe categorii"
     }
 }
