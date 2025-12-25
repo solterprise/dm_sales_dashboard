@@ -17,6 +17,7 @@ import { SalesFilterApi } from '@/entities/sale-filter-api';
 import { SNIPETS } from '@/pages/data-table/snipets';
 import { MultiSelect } from 'primeng/multiselect';
 import { WarehouseService } from '@/pages/data-card/warehouse-service';
+import { SalesService } from '@/pages/data-table/sales-service';
 
 @Component({
     selector: 'app-data-table',
@@ -30,6 +31,7 @@ export class DataTable implements OnInit {
     @ViewChild('filter') filter!: ElementRef;
     @ViewChild('snippetSelect') snippetSelect!: any;
     private dataService = inject(ApiService);
+    private salesService = inject(SalesService);
     totalAmount = signal<number>(0);
     totalDeliveryAmount = signal<number>(0);
     @ViewChild('warehouseSelect') warehouseSelect!: MultiSelect;
@@ -66,6 +68,7 @@ export class DataTable implements OnInit {
             warehouse: this.payload.warehouse
         };
         this.dataService.getList(payloadToSend).subscribe((x) => {
+            this.salesService.sales.set(x);
             this.sales = (x ?? []).sort((a, b) => Number(b.amount) - Number(a.amount));
             if (this.payload.warehouse === null) {
                 this.warehouses = this.getUniqueWarehouses(this.sales);

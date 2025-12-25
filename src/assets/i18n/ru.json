@@ -17,7 +17,8 @@
         "amount": "Сумма",
         "quantity": "Количество",
         "totalAmount": "Общая сумма",
-        "deliveryAmount" : "Сумма доставки"
+        "deliveryAmount" : "Сумма доставки",
+        "stock": "Остаток"
     },
     "utils": {
         "back": "Назад",
@@ -40,9 +41,10 @@
         "noResultsFound": "Ничего не найдено",
         "showAll": "Показать все",
         "showLess": "Показать меньше",
-        "logout": "Выйти"
+        "logout": "Выйти",
+        "itemsSelected": "Выбрано {{count}}"
     },
     "warehouse": {
-        "title": "Склад"
+        "title": "Продажи по категориям"
     }
 }

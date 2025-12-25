@@ -7,11 +7,12 @@ import { CommonModule } from '@angular/common';
 import { RippleModule } from 'primeng/ripple';
 import { MenuItem } from 'primeng/api';
 import { LayoutService } from '../service/layout.service';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
     selector: '[app-menuitem]',
-    imports: [CommonModule, RouterModule, RippleModule],
+    imports: [CommonModule, RouterModule, RippleModule, TranslocoPipe],
     template: `
         <ng-container>
             <div *ngIf="root && item.visible !== false" class="layout-menuitem-root-text">{{ item.label }}</div>
@@ -39,7 +40,7 @@ import { LayoutService } from '../service/layout.service';
                 pRipple
             >
                 <i [ngClass]="item.icon" class="layout-menuitem-icon"></i>
-                <span class="layout-menuitem-text">{{ item.label }}</span>
+                <span class="layout-menuitem-text">{{ item.label | transloco }}</span>
                 <i class="pi pi-fw pi-angle-down layout-submenu-toggler" *ngIf="item.items"></i>
             </a>
 

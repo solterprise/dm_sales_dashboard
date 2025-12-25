@@ -4,15 +4,15 @@
             <div class="flex flex-col text-right">
                 <div class="font-semibold text-xl mb-4">{{ 'sales.title'|transloco }}</div>
             </div>
-            <div class="flex flex-col text-right">
-                <span class="text-gray-600">Stock</span>
-                <span>{{ stockQuantity() | number:'1.0-0' }}</span>
-            </div>
         </div>
     </ng-template>
 
     <ng-template #end>
         <div class="flex items-center justify-end gap-8 mt-4 text-lg font-semibold">
+            <div class="flex flex-col text-right">
+                <span class="text-gray-600">{{'sales.stock'| transloco}}</span>
+                <span>{{ stockQuantity() | number:'1.0-0' }}</span>
+            </div>
             <div class="flex flex-col text-right">
                 <span class="text-gray-600">{{ 'sales.totalAmount'| transloco }}</span>
                 <span>{{ totalAmount() | number:'1.0-0' }}</span>
@@ -58,7 +58,8 @@
                             (onChange)="onWarehouseChange()"
                             display="chip"
                             [emptyMessage]=" 'utils.noResultsFound' | transloco "
-                            [emptyFilterMessage]=" 'utils.noResultsFound' | transloco ">
+                            [emptyFilterMessage]=" 'utils.noResultsFound' | transloco "
+                            [selectedItemsLabel]="('utils.itemsSelected' | transloco)+ '' + selectedWarehouses?.length ">
                         </p-multiSelect>
                     </div>
 
@@ -97,9 +98,6 @@
                             placeholder="{{ 'utils.selectSnippetPlaceholder' | transloco }}"
                             (onChange)="selectSnippet($event.value)">
                             <ng-template let-option pTemplate="item">
-                                {{ option.labelKey | transloco }}
-                            </ng-template>
-                            <ng-template let-option pTemplate="selectedItem">
                                 {{ option.labelKey | transloco }}
                             </ng-template>
                         </p-select>
