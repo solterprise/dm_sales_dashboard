@@ -44,7 +44,7 @@ export class DataCard implements OnInit {
         data.forEach((item) => {
             const category = item.category?.trim() || 'No category';
             const current = categoryMap.get(category) ?? 0;
-            categoryMap.set(category, current + Number(item.amount));
+            categoryMap.set(category, Number((current + Number(item.amount)).toFixed(2)));
         });
 
         const entries = Array.from(categoryMap.entries()).sort((a, b) => b[1] - a[1]);
@@ -98,7 +98,7 @@ export class DataCard implements OnInit {
         data.forEach((item) => {
             const category = item.category?.trim() || 'No category';
             const current = categoryMap.get(category) ?? 0;
-            categoryMap.set(category, current + Number(item.amount));
+            categoryMap.set(category, Number((current + Number(item.amount)).toFixed(2)));
         });
 
         const entries = Array.from(categoryMap.entries()).sort((a, b) => b[1] - a[1]);
