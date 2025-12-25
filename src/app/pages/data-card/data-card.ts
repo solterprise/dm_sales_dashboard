@@ -71,13 +71,20 @@ export class DataCard implements OnInit {
                 const categoryMap = new Map<string, number>();
 
                 data.forEach((item) => {
-                    const current = categoryMap.get(item.category) ?? 0;
+                    const category =
+                        item.category?.trim()
+                            ? item.category.trim()
+                            : 'No category';
+
+                    const current = categoryMap.get(category) ?? 0;
+
                     categoryMap.set(
-                        item.category,
+                        category,
                         Math.round(current + Number(item.amount))
                     );
                 });
                 const entries = Array.from(categoryMap.entries()).sort((a, b) => b[1] - a[1]);
+
 
                 const labels: string[] = [];
                 const values: number[] = [];
