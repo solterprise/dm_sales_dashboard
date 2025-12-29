@@ -35,6 +35,8 @@
         "today": "Ziua curentă",
         "currentMonth": "Luna curentă",
         "currentYear": "Anul curent",
+        "previousMonth": "Luna trecută",
+        "yesterday": "Ieri",
         "menu": "Meniu",
         "selectWarehouse": "Selectează punctul de vanzare",
         "selectSnippetPlaceholder": "Selectează perioada",
@@ -42,7 +44,8 @@
         "showAll": "Arată tot",
         "showLess": "Arată mai puțin",
         "logout": "Deconectare",
-        "itemsSelected": "A-ti selectat {{count}}"
+        "itemsSelected": "A-ti selectat {{count}}",
+        "apply": "Aplică"
     },
     "warehouse": {
         "title": "Vânzări pe categorii"

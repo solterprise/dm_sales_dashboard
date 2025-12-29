@@ -14,7 +14,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
 import { Toolbar } from 'primeng/toolbar';
 import { getCurrentMonthRange, getCurrentYearRange, formatDate } from '@/pages/date-utils';
 import { SalesFilterApi } from '@/entities/sale-filter-api';
-import { SNIPETS } from '@/pages/data-table/snipets';
+import { SALES_FILTER_KEY, SNIPETS } from '@/pages/data-table/snipets';
 import { MultiSelect } from 'primeng/multiselect';
 import { WarehouseService } from '@/pages/data-card/warehouse-service';
 import { SalesService } from '@/pages/data-table/sales-service';
@@ -47,9 +47,24 @@ export class DataTable implements OnInit {
     private warehouseService = inject(WarehouseService);
     protected stockQuantity = signal<number>(0);
     private closeTimer: any = null;
+    selectedSnippet: string | null = null;
 
     ngOnInit() {
-        this.getSales();
+        this.restoreFiltersFromStorage();
+        this.warehouses = this.restoreWarehousesFromStorage();
+
+        if (this.salesService.isLoaded()) {
+            this.sales = this.salesService.sales() ?? [];
+            this.calculateTotalAmount(this.sales);
+            this.calculateTotalDeliveryAmount(this.sales);
+            return;
+        }
+
+        this.getSales({
+            dateStart: formatDate(this.payload.dateStart),
+            dateEnd: formatDate(this.payload.dateEnd),
+            warehouse: this.payload.warehouse
+        });
     }
 
     private getUniqueWarehouses(products: any[]): string[] {
@@ -69,9 +84,14 @@ export class DataTable implements OnInit {
         };
         this.dataService.getList(payloadToSend).subscribe((x) => {
             this.salesService.sales.set(x);
+            this.salesService.isLoaded.set(true);
             this.sales = (x ?? []).sort((a, b) => Number(b.amount) - Number(a.amount));
             if (this.payload.warehouse === null) {
-                this.warehouses = this.getUniqueWarehouses(this.sales);
+                const uniqueWarehouses = this.getUniqueWarehouses(this.sales);
+                this.warehouses = uniqueWarehouses.length ? uniqueWarehouses : this.restoreWarehousesFromStorage();
+                if (this.warehouses.length) {
+                    localStorage.setItem('warehouses', JSON.stringify(this.warehouses));
+                }
             }
             this.calculateTotalAmount(this.sales);
             this.calculateTotalDeliveryAmount(this.sales);
@@ -96,6 +116,7 @@ export class DataTable implements OnInit {
     protected clear(table: Table) {
         table.clear();
         this.filter.nativeElement.value = '';
+
         this.payload = {
             dateStart: getCurrentMonthRange().startDate,
             dateEnd: getCurrentMonthRange().endDate,
@@ -103,7 +124,11 @@ export class DataTable implements OnInit {
         };
 
         this.selectedWarehouses = [];
-        if (this.snippetSelect) this.snippetSelect.clear();
+        this.selectedSnippet = null;
+
+        localStorage.removeItem(SALES_FILTER_KEY);
+
+        this.snippetSelect?.clear();
         this.getSales();
     }
 
@@ -113,10 +138,12 @@ export class DataTable implements OnInit {
             dateEnd: formatDate(this.payload.dateEnd),
             warehouse: this.payload.warehouse
         };
+        this.saveFiltersToStorage();
         this.getSales(payloadToSend);
     }
 
     selectSnippet(snippet: string) {
+        this.selectedSnippet = snippet;
         const now = new Date();
 
         switch (snippet) {
@@ -124,25 +151,38 @@ export class DataTable implements OnInit {
                 this.payload.dateStart = now;
                 this.payload.dateEnd = now;
                 break;
+            case 'yesterday': {
+                const yesterday = new Date(now);
+                yesterday.setDate(now.getDate() - 1);
+                this.payload.dateStart = yesterday;
+                this.payload.dateEnd = yesterday;
+                break;
+            }
             case 'month':
                 const monthRange = getCurrentMonthRange();
                 this.payload.dateStart = monthRange.startDate;
                 this.payload.dateEnd = monthRange.endDate;
                 break;
+            case 'prevMonth': {
+                const date = new Date();
+                const firstDayPrevMonth = new Date(date.getFullYear(), date.getMonth() - 1, 1);
+                const lastDayPrevMonth = new Date(date.getFullYear(), date.getMonth(), 0);
+
+                this.payload.dateStart = firstDayPrevMonth;
+                this.payload.dateEnd = lastDayPrevMonth;
+                break;
+            }
             case 'year':
                 const yearRange = getCurrentYearRange();
                 this.payload.dateStart = yearRange.startDate;
                 this.payload.dateEnd = yearRange.endDate;
                 break;
         }
-
-        this.applyFilter();
     }
 
     onWarehouseChange() {
         this.payload.warehouse = this.selectedWarehouses.length ? this.selectedWarehouses.join(',') : null;
-
-        this.getSales();
+        this.saveFiltersToStorage();
         this.restartCloseTimer();
     }
 
@@ -158,11 +198,59 @@ export class DataTable implements OnInit {
 
     private getStockQuantity(payload: any) {
         this.warehouseService.getData(payload).subscribe((data) => {
-            const stockQuantity = data.reduce(
-                (sum, item) => sum + Number(item.amount ?? 0),
-                0
-            );
+            const stockQuantity = data.reduce((sum, item) => sum + Number(item.amount ?? 0), 0);
             this.stockQuantity.set(stockQuantity);
-        })
+        });
+    }
+
+    private saveFiltersToStorage() {
+        const data = {
+            payload: {
+                ...this.payload,
+                dateStart: this.payload.dateStart instanceof Date ? this.payload.dateStart.toISOString() : this.payload.dateStart,
+                dateEnd: this.payload.dateEnd instanceof Date ? this.payload.dateEnd.toISOString() : this.payload.dateEnd
+            },
+            selectedWarehouses: this.selectedWarehouses,
+            selectedSnippet: this.selectedSnippet
+        };
+
+        localStorage.setItem(SALES_FILTER_KEY, JSON.stringify(data));
+    }
+
+    private restoreFiltersFromStorage(): boolean {
+        const raw = localStorage.getItem(SALES_FILTER_KEY);
+        if (!raw) return false;
+
+        try {
+            const saved = JSON.parse(raw);
+
+            this.payload = {
+                ...saved.payload,
+                dateStart: saved.payload.dateStart ? new Date(saved.payload.dateStart) : getCurrentMonthRange().startDate,
+                dateEnd: saved.payload.dateEnd ? new Date(saved.payload.dateEnd) : getCurrentMonthRange().endDate
+            };
+
+            this.selectedWarehouses = saved.selectedWarehouses ?? [];
+            this.payload.warehouse = this.selectedWarehouses.length ? this.selectedWarehouses.join(',') : null;
+
+            this.selectedSnippet = saved.selectedSnippet ?? null;
+
+            return true;
+        } catch {
+            return false;
+        }
+    }
+
+    private restoreWarehousesFromStorage(): string[] {
+        const raw = localStorage.getItem('warehouses');
+        if (!raw) return [];
+
+        try {
+            const saved: string[] = JSON.parse(raw);
+            return Array.isArray(saved) ? saved : [];
+        } catch (e) {
+            console.error('Ошибка при чтении складов из localStorage', e);
+            return [];
+        }
     }
 }
