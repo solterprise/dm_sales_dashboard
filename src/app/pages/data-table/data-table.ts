@@ -260,4 +260,9 @@ export class DataTable implements OnInit {
             return [];
         }
     }
+
+    onDateChange() {
+        this.selectedSnippet = null; // сбрасываем выбранный сниппет
+        this.applyFilter(); // применяем фильтр с новыми датами
+    }
 }

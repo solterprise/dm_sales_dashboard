@@ -78,7 +78,7 @@
                             [showIcon]="true"
                             [showButtonBar]="true"
                             [(ngModel)]="payload.dateStart"
-                            (onSelect)="applyFilter()"
+                            (onSelect)="onDateChange()"
                             [placeholder]="'utils.dateStartPlaceholder' | transloco">
                         </p-datepicker>
                     </div>
@@ -90,7 +90,7 @@
                             [showIcon]="true"
                             [showButtonBar]="true"
                             [(ngModel)]="payload.dateEnd"
-                            (onSelect)="applyFilter()"
+                            (onSelect)="onDateChange()"
                             [placeholder]="'utils.dateEndPlaceholder' | transloco">
                         </p-datepicker>
                     </div>
