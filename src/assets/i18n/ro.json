@@ -45,7 +45,7 @@
         "showLess": "Arată mai puțin",
         "logout": "Deconectare",
         "itemsSelected": "A-ti selectat {{count}}",
-        "apply": "Aplică"
+        "apply": "Actualizează"
     },
     "warehouse": {
         "title": "Vânzări pe categorii"

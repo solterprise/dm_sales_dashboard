@@ -45,7 +45,7 @@
         "showLess": "Показать меньше",
         "logout": "Выйти",
         "itemsSelected": "Выбрано {{count}}",
-        "apply": "Применить"
+        "apply": "Обновить"
     },
     "warehouse": {
         "title": "Продажи по категориям"

@@ -49,7 +49,7 @@
                         [label]="'utils.apply' | transloco"
                         class="bg-teal-700 text-white border-none  w-full  sm:w-48"
                         icon="pi pi-check"
-                        (click)="applyFilter()">
+                        (click)="getSales()">
                     </button>
                 </div>
 
@@ -78,6 +78,7 @@
                             [showIcon]="true"
                             [showButtonBar]="true"
                             [(ngModel)]="payload.dateStart"
+                            (onSelect)="applyFilter()"
                             [placeholder]="'utils.dateStartPlaceholder' | transloco">
                         </p-datepicker>
                     </div>
@@ -89,6 +90,7 @@
                             [showIcon]="true"
                             [showButtonBar]="true"
                             [(ngModel)]="payload.dateEnd"
+                            (onSelect)="applyFilter()"
                             [placeholder]="'utils.dateEndPlaceholder' | transloco">
                         </p-datepicker>
                     </div>

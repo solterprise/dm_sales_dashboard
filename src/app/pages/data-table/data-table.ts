@@ -80,7 +80,7 @@ export class DataTable implements OnInit {
         table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
     }
 
-    private getSales(payload?: SalesFilterApi) {
+    protected getSales(payload?: SalesFilterApi) {
         this.loading = true;
         const payloadToSend: SalesFilterApi = payload ?? {
             dateStart: formatDate(this.payload.dateStart),
@@ -183,12 +183,14 @@ export class DataTable implements OnInit {
                 this.payload.dateEnd = yearRange.endDate;
                 break;
         }
+        this.applyFilter();
     }
 
     onWarehouseChange() {
         this.payload.warehouse = this.selectedWarehouses.length ? this.selectedWarehouses.join(',') : null;
         this.saveFiltersToStorage();
         this.restartCloseTimer();
+        this.getSales();
     }
 
     private restartCloseTimer() {
