@@ -36,7 +36,7 @@
              responsiveLayout="scroll">
         <ng-template #caption>
             <div class="flex flex-col gap-4">
-                <div class="flex justify-start sm:w-full">
+                <div class="flex justify-start sm:w-full gap-4 mb-4 sm:mb-0">
                     <button
                         pButton
                         [label]="'utils.clear' | transloco"
@@ -44,7 +44,15 @@
                         icon="pi pi-filter-slash"
                         (click)="clear(dt1)">
                     </button>
+                    <button
+                        pButton
+                        [label]="'utils.apply' | transloco"
+                        class="bg-teal-700 text-white border-none  w-full  sm:w-48"
+                        icon="pi pi-check"
+                        (click)="applyFilter()">
+                    </button>
                 </div>
+
 
                 <div class="flex flex-col sm:flex-row sm:items-end sm:gap-4 gap-3 flex-wrap">
 
@@ -70,7 +78,6 @@
                             [showIcon]="true"
                             [showButtonBar]="true"
                             [(ngModel)]="payload.dateStart"
-                            (onSelect)="applyFilter()"
                             [placeholder]="'utils.dateStartPlaceholder' | transloco">
                         </p-datepicker>
                     </div>
@@ -82,7 +89,6 @@
                             [showIcon]="true"
                             [showButtonBar]="true"
                             [(ngModel)]="payload.dateEnd"
-                            (onSelect)="applyFilter()"
                             [placeholder]="'utils.dateEndPlaceholder' | transloco">
                         </p-datepicker>
                     </div>
@@ -93,13 +99,32 @@
                         <p-select
                             #snippetSelect
                             [options]="snippets"
+                            [(ngModel)]="selectedSnippet"
                             optionLabel="labelKey"
                             optionValue="value"
                             placeholder="{{ 'utils.selectSnippetPlaceholder' | transloco }}"
                             (onChange)="selectSnippet($event.value)">
-                            <ng-template let-option pTemplate="item">
+
+                            <!-- Элементы списка -->
+                            <ng-template pTemplate="item" let-option>
                                 {{ option.labelKey | transloco }}
                             </ng-template>
+
+                            <!-- Выбранное значение -->
+                            <ng-template pTemplate="selectedItem" let-option>
+                                @if (option) {
+                                    <span>{{ option.labelKey | transloco }}</span>
+                                } @else {
+                                    <ng-template #placeholder>
+                                        {{ 'utils.selectSnippetPlaceholder' | transloco }}
+                                    </ng-template>
+                                }
+
+                                <ng-template #placeholder>
+                                    {{ 'utils.selectSnippetPlaceholder' | transloco }}
+                                </ng-template>
+                            </ng-template>
+
                         </p-select>
                     </div>
 

@@ -33,7 +33,9 @@
         "noData": "Данные отсутствуют",
         "selectSnippet": "Период",
         "today": "Текущий день",
+        "yesterday": "Вчера",
         "currentMonth": "Текущий месяц",
+        "previousMonth": "Прошлый месяц",
         "currentYear": "Текущий год",
         "menu": "Меню",
         "selectWarehouse": "Выберите точки продаж",
@@ -42,7 +44,8 @@
         "showAll": "Показать все",
         "showLess": "Показать меньше",
         "logout": "Выйти",
-        "itemsSelected": "Выбрано {{count}}"
+        "itemsSelected": "Выбрано {{count}}",
+        "apply": "Применить"
     },
     "warehouse": {
         "title": "Продажи по категориям"
