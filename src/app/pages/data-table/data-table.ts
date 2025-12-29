@@ -57,6 +57,11 @@ export class DataTable implements OnInit {
             this.sales = this.salesService.sales() ?? [];
             this.calculateTotalAmount(this.sales);
             this.calculateTotalDeliveryAmount(this.sales);
+            this.getStockQuantity({
+                dateEnd: formatDate(this.payload.dateEnd),
+                warehouse: this.payload.warehouse
+            });
+
             return;
         }
 
