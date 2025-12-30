@@ -1,4 +1,4 @@
-import { Component, ElementRef, inject, OnInit, signal, ViewChild } from '@angular/core';
+import { Component, computed, ElementRef, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { CommonModule } from '@angular/common';
 import { RippleModule } from 'primeng/ripple';
@@ -48,7 +48,9 @@ export class DataTable implements OnInit {
     protected stockQuantity = signal<number>(0);
     private closeTimer: any = null;
     selectedSnippet: string | null = null;
-
+    totalWithDelivery = computed(() =>
+        this.totalAmount() + this.totalDeliveryAmount()
+    );
     ngOnInit() {
         this.restoreFiltersFromStorage();
         this.warehouses = this.restoreWarehousesFromStorage();

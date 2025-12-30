@@ -30,15 +30,14 @@ export class DataCard implements OnInit {
     isLoading = false;
     sales = signal<any[] | null>(null);
 
-
     ngOnInit() {
         const data = this.salesService.getLocalData();
         this.processSalesData(data);
     }
+
     private processSalesData(data: any[]) {
         this.sales.set(data);
         this.calculateTotalAmount(data);
-
 
         const categoryMap = new Map<string, number>();
         data.forEach((item) => {
@@ -77,9 +76,7 @@ export class DataCard implements OnInit {
         }
 
         const totalSum = displayValues.reduce((a, b) => a + b, 0);
-        this.displayCategories = displayLabels.map(
-            (label, i) => `${label} (${displayValues[i]}) - ${((displayValues[i] / totalSum) * 100).toFixed(2)}%`
-        );
+        this.displayCategories = displayLabels.map((label, i) => `${label} (${displayValues[i]}) - ${((displayValues[i] / totalSum) * 100).toFixed(2)}%`);
         this.displayValues = displayValues;
 
         this.initCharts(this.displayValues);
@@ -129,14 +126,11 @@ export class DataCard implements OnInit {
         }
 
         const totalSum = displayValues.reduce((a, b) => a + b, 0);
-        this.displayCategories = displayLabels.map(
-            (label, i) => `${label} (${displayValues[i]}) - ${((displayValues[i] / totalSum) * 100).toFixed(2)}%`
-        );
+        this.displayCategories = displayLabels.map((label, i) => `${label} (${displayValues[i]}) - ${((displayValues[i] / totalSum) * 100).toFixed(2)}%`);
         this.displayValues = displayValues;
 
         this.initCharts(this.displayValues);
     }
-
 
     initCharts(values: number[]) {
         const textColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color');
@@ -195,7 +189,7 @@ export class DataCard implements OnInit {
 
     private calculateTotalAmount(sales: any[]) {
         const total = sales.reduce((sum, item) => sum + Number(item.amount), 0);
-        this.totalAmount.set(total);
+        const totalDelivery = sales.reduce((sum, item) => sum + Number(item.deliveryQuantity), 0);
+        this.totalAmount.set(total + totalDelivery);
     }
 }
-
